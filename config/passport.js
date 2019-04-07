@@ -19,6 +19,7 @@ module.exports = function (passport, user) {
     // Tell passport to use a new LocalStrategy called "local-signup"
     passport.use('local-signup', new LocalStrategy(
         {
+            // By default, Passport LocalStrategy uses a username and a password
             usernameField: 'username', // Setting the authenticating username to be the inputted username
             passwordField: 'password', // Setting the authenticating password to be the inputted password
             passReqToCallback: true // Pass the entire request to the callback function so we can encrypt the password and add an entry into the User collection

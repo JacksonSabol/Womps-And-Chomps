@@ -10,7 +10,8 @@ const session = require('express-session');
 // const env = require('dotenv').load();
 require('dotenv').config();
 const mongoose = require("mongoose");
-const routes = require("./routes");
+const db = require("./models");
+const path = require("path");
 
 // Set up the Express App
 // =============================================================
@@ -18,6 +19,11 @@ const routes = require("./routes");
 const app = express();
 // Use an environmental port when in production or 3001 in development
 const PORT = process.env.PORT || 3001;
+// If deployed, use the deployed database. Otherwise use the local WompsAndChomps database
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/WompsAndChomps";
+
+// Set mongoose to leverage built in JavaScript ES6 Promises
+mongoose.Promise = Promise;
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
@@ -33,22 +39,27 @@ app.use(passport.session());
 
 // Serve up static assets (in production)
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
+    app.use(express.static("client/build"));
 }
 
 // Routes
 // =============================================================
 // Load passport strategies
-require("./config/passport.js")(passport, db.Auth);
+require("./config/passport.js")(passport, db.User);
 // Set up the Express app to use Passport strategies for authentication routes
 require("./routes/auth-routes.js")(app, passport);
-// Set up the Express app to use routes
-app.use(routes);
+// Set up the Express app to use the event API routes
+require("./routes/event-routes.js")(app);
+// Send every other request to the React app
+// Define any API routes before this runs
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "./client/build/index.html"));
+});
 
 // Connect to the Mongo DB
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/WompsAndChomps");
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useCreateIndex: true });
 
 // Start the API server
 app.listen(PORT, function () {
-  console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);
+    console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);
 });
