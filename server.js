@@ -7,6 +7,7 @@
 const express = require("express");
 const passport = require('passport');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 // const env = require('dotenv').load();
 require('dotenv').config();
 const mongoose = require("mongoose");
@@ -30,7 +31,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Set up the Express app to use sessions with session storage handled by connect-mongo
-app.use(session({ secret: `${process.env.sessionSecret}`, resave: true, saveUninitialized: true }));
+app.use(session({
+    secret: `${process.env.sessionSecret}`, // Secret for signing a session cookie
+    resave: true, // Set to false to not save a session if unmodified - prevents resaving all the session data on the database every single time that the user refreshes the page
+    saveUninitialized: true, // Set to false to not create a session until something is stored
+    // secure: true, // Enable once TLS is set up - Ensures the browser only sends the cookie over HTTPS
+    httpOnly: true, // Default of express-session is true. Ensures the cookie is sent only over HTTP(S), not client JavaScript, helping to protect against cross-site scripting attacks
+    unset: "destroy", // Control the result of unsetting req.session through destroy(); The default value is 'keep', so this sets the session to be destroyed (deleted) when the response ends
+    store: new MongoStore({ // Set instance of a session store to a new connect-mongo store
+        mongooseConnection: mongoose.connection, // Use the existing Mongoose connection to the MongoDB
+        url: MONGODB_URI, // Set the database URL based on environment
+        ttl: 14 * 24 * 60 * 60 // Session expiration length = 14 days - Connect Mongo default
+        // touchAfter: 24 * 3600 // Enable for Lazy session update - time period in seconds
+    })
+}));
 
 // Initialize Passport to be used by the Express app to to manage user authentication requests
 app.use(passport.initialize());
@@ -45,7 +59,7 @@ if (process.env.NODE_ENV === "production") {
 // Routes
 // =============================================================
 // Load passport strategies
-require("./config/passport.js")(passport, db.User);
+require("./config/passport.js")(passport, db.User); // This is the wrong way to do it. Change the collection to whatever stores the sessions (default for connect-mongo is "session"), then update the Passport strategies (serialize/deserializeUser) to get User by session id
 // Set up the Express app to use Passport strategies for authentication routes
 require("./routes/auth-routes.js")(app, passport);
 // Set up the Express app to use the event API routes

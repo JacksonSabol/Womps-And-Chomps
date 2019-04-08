@@ -91,8 +91,8 @@ module.exports = function (passport, user) {
                         });
                     }
                     // Otherwise, get the logged in user's data
-                    const userInfo = dbUser.get();
-                    return done(null, userInfo);
+                    // const userInfo = dbUser.get();
+                    return done(null, dbUser);
                 })
                 .catch(function (err) {
 
@@ -104,20 +104,26 @@ module.exports = function (passport, user) {
                 });
         }
     ));
+    // ** This stores the User objectID in the cookie if you follow the tutorials - should be the session ID **
+    // "The meaning and application logic associated to the session ID must be stored on the server side"
+    // Change which collection Passport uses in the server.js file or wherever importing config/passport.js
+
     // Save the user id (the second argument of the done function) in a session
     // It is later used to retrieve the whole object via the deserializeUser function
     passport.serializeUser(function (auth, done) {
+        console.log("serializeUser auth: ", auth);
         done(null, auth.id);
     });
 
     // Retrieve the user id from the stored session
     passport.deserializeUser(function (id, done) {
+        console.log("deserializeUser id: ", id);
         // Check the User collection for a matching user id and pass the user information into the parameter of the callback function
         User.findById(id).then(function (user) {
             // If the user is found in the User collection
             if (user) {
                 // Return error: null, and the user's authentication information
-                done(null, user.get());
+                done(null, user);
             }
             // Otherwise, the user's id was not found, or the session was destroyed
             else {
