@@ -27,7 +27,7 @@ module.exports = function (passport, user) {
         // Define callback function to handle sign-up
         function (req, username, password, done) {
             // Check the User collection for an entry matching the user-inputted username
-            User.findOne({ username: username })
+            User.findOne({ username: String(username) }) // Cast usernames and passwords to strings to prevent NoSQL injection
                 .then(function (dbUser) {
                     // If an entry is found, the username is already taken, i.e. a user already has an account with that name
                     if (dbUser) {
@@ -39,7 +39,7 @@ module.exports = function (passport, user) {
                     // Otherwise, the username is not taken, so make a new one
                     else {
                         // Encrypt the user's password using the bCrypt helper function
-                        const userPassword = generateHash(password);
+                        const userPassword = generateHash(String(password)); // Cast usernames and passwords to strings to prevent NoSQL injection
                         // Assign a variable to hold the user's authentication information
                         const newUserData = {
                             username: username,
@@ -74,7 +74,7 @@ module.exports = function (passport, user) {
         },
         function (req, username, password, done) {
             // Check the User table for an entry matching the user-inputted username
-            User.findOne({ username: username })
+            User.findOne({ username: String(username) }) // Cast usernames and passwords to strings to prevent NoSQL injection
                 .then(function (dbUser) {
                     // If no entry matches the user-inputted username
                     if (!dbUser) {
@@ -84,7 +84,7 @@ module.exports = function (passport, user) {
                         });
                     }
                     // If the user-inputted password does not match the password from the User table
-                    if (!isValidPassword(dbUser.password, password)) {
+                    if (!isValidPassword(dbUser.password, String(password))) { // Cast usernames and passwords to strings to prevent NoSQL injection
                         // Return error: null, user: false
                         return done(null, false, {
                             message: 'Incorrect password.'

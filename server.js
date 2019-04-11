@@ -6,6 +6,7 @@
 // =============================================================
 const express = require("express");
 const passport = require('passport');
+const csrf = require('csurf');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 // const env = require('dotenv').load();
@@ -18,6 +19,8 @@ const path = require("path");
 // =============================================================
 // Initialize Express
 const app = express();
+// Use case-sensitive routing
+app.set("case sensitive routing", true);
 // Use an environmental port when in production or 3001 in development
 const PORT = process.env.PORT || 3001;
 // If deployed, use the deployed database. Otherwise use the local WompsAndChomps database
@@ -45,6 +48,13 @@ app.use(session({
         // touchAfter: 24 * 3600 // Enable for Lazy session update - time period in seconds
     })
 }));
+
+// Apply CSRF protection across app - enable when tokens are in place
+// app.use(csrf({ 
+//     cookie: false, // When set to true (or an object of options for the cookie), then the module changes behavior and no longer uses req.session
+//     ignoreMethods: ['HEAD', 'OPTIONS'] // Defaults to ['GET', 'HEAD', 'OPTIONS'], so remove GET to protect routes listening for GET requests
+//     The alternative is to not use GET routes for anything sensitive, which is what we're going to go with
+// }));
 
 // Initialize Passport to be used by the Express app to to manage user authentication requests
 app.use(passport.initialize());
