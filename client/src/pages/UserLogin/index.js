@@ -91,7 +91,7 @@ class UserLogin extends Component {
                                     disabled={!(this.state.username && this.state.password)}
                                     onClick={this.handleLoginUser}
                                 >
-                                    Signup
+                                    Sign In
                                 </FormBtn>
                                 {showError === true && loginError === true && (
                                     <div>

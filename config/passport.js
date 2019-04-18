@@ -1,21 +1,21 @@
 // Import bCrypt for encrypting and decrypting passwords
 const bCrypt = require('bcrypt-nodejs');
+// Define a function to encrypt the user's password
+const generateHash = function (password) {
+    return bCrypt.hashSync(password, bCrypt.genSaltSync(12), null);
+}
+// Define a function to compare two passwords - user entered password and password stored in the User table
+const isValidPassword = function (userpass, password) {
+    // Use bCrypt method to compare the two passwords - returns 'true' or 'false'
+    return bCrypt.compareSync(password, userpass);
+}
+// Import Local Strategy constructor from "passport-local" module
+const LocalStrategy = require('passport-local').Strategy;
 
-// Export local strategies, passing "Passport" module and the "User" collection from server.js
+// Export local strategies, accepting "Passport" module and the "User" schema from server.js
 module.exports = function (passport, user) {
-    // Assign a variable to hold the "User" collection
+    // Assign a variable to hold the "User" schema
     const User = user;
-    // Define a function to encrypt the user's password
-    const generateHash = function (password) {
-        return bCrypt.hashSync(password, bCrypt.genSaltSync(12), null);
-    }
-    // Define a function to compare two passwords - user entered password and password stored in the User table
-    const isValidPassword = function (userpass, password) {
-        // Use bCrypt method to compare the two passwords - returns 'true' or 'false'
-        return bCrypt.compareSync(password, userpass);
-    }
-    // Import Local "Strategy" constructor from "passport-local" module
-    const LocalStrategy = require('passport-local').Strategy;
     // Tell passport to use a new LocalStrategy called "local-signup"
     passport.use('local-signup', new LocalStrategy(
         {
@@ -42,7 +42,7 @@ module.exports = function (passport, user) {
                         const userPassword = generateHash(String(password)); // Cast usernames and passwords to strings to prevent NoSQL injection
                         // Assign a variable to hold the user's authentication information
                         const newUserData = {
-                            username: username,
+                            username: String(username),
                             password: userPassword
                         };
                         // Create a document in the User collection with the user's information
@@ -57,7 +57,7 @@ module.exports = function (passport, user) {
                             }
                             // Otherwise, return error: null and the newUser
                             if (newUser) {
-                                return done(null, newUser);
+                                return done(null, newUser.id);
                             }
                         });
                     }
@@ -73,7 +73,7 @@ module.exports = function (passport, user) {
             passReqToCallback: true // Pass the entire request to the callback function to compare username/password to those stored in the User collection
         },
         function (req, username, password, done) {
-            // Check the User table for an entry matching the user-inputted username
+            // Check the User collection for an entry matching the user-inputted username
             User.findOne({ username: String(username) }) // Cast usernames and passwords to strings to prevent NoSQL injection
                 .then(function (dbUser) {
                     // If no entry matches the user-inputted username
@@ -90,34 +90,29 @@ module.exports = function (passport, user) {
                             message: 'Incorrect password.'
                         });
                     }
-                    // Otherwise, get the logged in user's data
-                    // const userInfo = dbUser.get();
-                    return done(null, dbUser);
+                    // Otherwise, the user is authenticated
+                    // Write the userId to the session store by passing it to the serializeUser helper function
+                    return done(null, dbUser.id);
                 })
                 .catch(function (err) {
-
                     console.log("Error:", err);
-
                     return done(null, false, {
                         message: 'Our servers are under a heavy load right now. Please try again in a moment.'
                     });
                 });
         }
     ));
-    // ** This stores the User objectID in the cookie if you follow the tutorials - should be the session ID **
+    // This stores the User objectID in the session once authenticated
     // "The meaning and application logic associated to the session ID must be stored on the server side"
-    // Change which collection Passport uses in the server.js file or wherever importing config/passport.js
 
     // Save the user id (the second argument of the done function) in a session
     // It is later used to retrieve the whole object via the deserializeUser function
-    passport.serializeUser(function (auth, done) {
-        console.log("serializeUser auth: ", auth);
-        done(null, auth.id);
+    passport.serializeUser(function (id, done) {
+        done(null, id);
     });
 
     // Retrieve the user id from the stored session
     passport.deserializeUser(function (id, done) {
-        console.log("deserializeUser id: ", id);
         // Check the User collection for a matching user id and pass the user information into the parameter of the callback function
         User.findById(id).then(function (user) {
             // If the user is found in the User collection

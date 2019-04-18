@@ -9,7 +9,6 @@ module.exports = function (app, passport) {
 
     // Sign in existing user
     app.post("/user/signin", passport.authenticate('local-signin'), function (req, res) {
-        console.log("req.session at /user/signin", req.session);
         res.status(200).send({
             auth: true,
             message: 'User logged in'
