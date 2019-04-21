@@ -1,0 +1,20 @@
+.form-btn {
+    float: right;
+    margin-bottom: 10px;
+}
+
+.delete-btn {
+    float: right;
+    color: #e74944;
+}
+
+.auth-btn {
+    display: block;
+    float: right;
+    background-color: #000000;
+    color: #d3d3d3;
+    border: 1px solid #61dafb;
+    padding: 5px 35px;
+    margin: 10px 0px;
+    cursor: pointer;
+}

@@ -1,3 +1,71 @@
+/* Global Styles */
+
+@font-face {
+	font-family: 'KanitMedium'; /* Made by Cadson Demak - https://www.1001fonts.com/kanit-font.html */
+	src:url('./fonts/Kanit-Medium.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'KanitThin'; /* Made by Cadson Demak - https://www.1001fonts.com/kanit-font.html */
+	src:url('./fonts/Kanit-Thin.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'KanitLight'; /* Made by Cadson Demak - https://www.1001fonts.com/kanit-font.html */
+	src:url('./fonts/Kanit-Light.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+  font-family: "KanitLight" !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "KanitLight";
+  color: #d3d3d3 !important;
+}
+
+a {
+  color: #61dafb;
+  text-decoration: none;
+}
+
+a:hover, a:focus, a:active {
+  color: #459db6;
+  text-decoration: none;
+}
+
+.auth-link {
+  margin: 0px 5px;
+}
+
+.auth-label {
+  color: #d3d3d3 !important;
+}
+
+.auth-alert {
+  margin-top: 50px;
+}
+
+.auth-form {
+  margin-top: 50px;
+}
+
+.form-alert {
+  font-family: "KanitMedium";
+  color: #af2828 !important;
+}
+
 .App {
   text-align: center;
 }
@@ -9,18 +77,12 @@
 }
 
 .App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
 }
 
 @keyframes App-logo-spin {

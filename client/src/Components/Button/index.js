@@ -1,6 +1,5 @@
 import React from "react";
-import "./DeleteBtn.css";
-import "./FormBtn.css";
+import "./index.css";
 
 // This Delete Button component allows us to use a bootstrap styled delete button with less syntax
 export function DeleteBtn(props) {
@@ -14,6 +13,14 @@ export function DeleteBtn(props) {
 export function FormBtn(props) {
     return (
         <button className="btn btn-success form-btn" {...props}>
+            {props.children}
+        </button>
+    );
+}
+// This Authentication Button component allows us to use a consistently styled button for all authentication processes with less syntax
+export function AuthBtn(props) {
+    return (
+        <button className="auth-btn" {...props}>
             {props.children}
         </button>
     );

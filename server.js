@@ -72,6 +72,8 @@ if (process.env.NODE_ENV === "production") {
 require("./config/passport.js")(passport, db.User); // Pass the User schema to Passport to serialize and deserialize user information from session IDs
 // Set up the Express app to use Passport strategies for authentication routes
 require("./routes/auth-routes.js")(app, passport);
+// Set up the Express app to use the user API routes
+require("./routes/user-routes.js")(app);
 // Set up the Express app to use the event API routes
 require("./routes/event-routes.js")(app);
 // Send every other request to the React app

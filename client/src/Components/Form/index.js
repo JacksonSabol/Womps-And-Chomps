@@ -1,18 +1,19 @@
 import React from "react";
+import "./index.css";
 
-// This Input component allows us to use a bootstrap styled text input with less syntax
-export function Input(props) {
+// This Auth Input component allows us to use a styled text input with less syntax
+export function AuthInput(props) {
     return (
-        <div className="form-group">
-            <input className="form-control" {...props} />
+        <div>
+            <input className="auth-input" {...props} />
         </div>
     );
 }
-// This Text Area component allows us to use a bootstrap styled text-area with less syntax
+// This Text Area component allows us to use a styled text-area with less syntax
 export function TextArea(props) {
     return (
-        <div className="form-group">
-            <textarea className="form-control" rows="20" {...props} />
+        <div>
+            <textarea className="" rows="20" {...props} />
         </div>
     );
 }

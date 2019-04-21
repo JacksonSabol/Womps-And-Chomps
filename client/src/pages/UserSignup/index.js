@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Container, Row, Col } from '../../components/Grid';
-import { Jumbotron } from "../../components/Jumbotron";
-import { FormBtn } from "../../components/Button";
-import { Input } from "../../components/Form";
+import { Instructotron } from "../../components/Instructotron";
+import { AuthBtn } from "../../components/Button";
+import { AuthInput } from "../../components/Form";
 import axios from 'axios';
 import './index.css';
 
@@ -79,60 +78,56 @@ class UserSignup extends Component {
 
         if (unregistered) {
             return (
-                <Container fluid>
-                    <Row>
-                        <Col size="md-6">
-                            <Jumbotron>
-                                <h1>Sign Up</h1>
-                                <a href="/" className="auth-link">Home </a>
-                                <a href="/user/signin" className="auth-link"> Signin</a>
-                            </Jumbotron>
-                            <form>
-                                <label className="username-label">Choose a username:</label>
-                                <Input
-                                    type={"text"}
-                                    value={this.state.username}
-                                    onChange={this.handleInputChange}
-                                    name="username"
-                                    placeholder="Username (required)"
-                                />
-                                <label className="password-label">Choose a password:</label>
-                                <Input
-                                    type={"password"}
-                                    value={this.state.password}
-                                    onChange={this.handleInputChange}
-                                    name="password"
-                                    placeholder="Password"
-                                />
-                                <label className="password-label">Confirm password:</label>
-                                <Input
-                                    type={"password"}
-                                    value={this.state.passwordConfirm}
-                                    onChange={this.handleInputChange}
-                                    name="passwordConfirm"
-                                    placeholder="Confirm Password"
-                                />
-                                <FormBtn
-                                    disabled={!(this.state.username && this.state.password && this.state.passwordConfirm)}
-                                    onClick={this.handleRegisterUser}
-                                >
-                                    Sign Up
-                                </FormBtn>
-                                {showError === true && passwordError === true && (
-                                    <div>
-                                        <p className="form-alert">Passwords do not match.</p>
-                                    </div>
-                                )}
-                                {showError === true && loginError === true && (
-                                    <div>
-                                        <p className="form-alert">That username is already taken. Please choose another, or login.</p>
-                                        <p><a className="form-alert-login" href="/user/signin">Login</a></p>
-                                    </div>
-                                )}
-                            </form>
-                        </Col>
-                    </Row>
-                </Container>
+                <div>
+                    <Instructotron height={"450px"}>
+                        <h1>Register</h1>
+                        <a href="/" className="auth-link">Home </a>
+                        <a href="/user/signin" className="auth-link">Login</a>
+                        <form className="auth-form">
+                            <label className="auth-label">Choose a username:</label>
+                            <AuthInput
+                                type={"text"}
+                                value={this.state.username}
+                                onChange={this.handleInputChange}
+                                name="username"
+                                placeholder="Username (required)"
+                            />
+                            <label className="auth-label">Choose a password:</label>
+                            <AuthInput
+                                type={"password"}
+                                value={this.state.password}
+                                onChange={this.handleInputChange}
+                                name="password"
+                                placeholder="Password"
+                            />
+                            <label className="auth-label">Confirm password:</label>
+                            <AuthInput
+                                type={"password"}
+                                value={this.state.passwordConfirm}
+                                onChange={this.handleInputChange}
+                                name="passwordConfirm"
+                                placeholder="Confirm Password"
+                            />
+                            <AuthBtn
+                                disabled={!(this.state.username && this.state.password && this.state.passwordConfirm)}
+                                onClick={this.handleRegisterUser}
+                            >
+                                Sign Up
+                                </AuthBtn>
+                            {showError === true && passwordError === true && (
+                                <div className="auth-alert">
+                                    <p className="form-alert">Passwords do not match.</p>
+                                </div>
+                            )}
+                            {showError === true && loginError === true && (
+                                <div className="auth-alert">
+                                    <p className="form-alert">That username is already taken. Please choose another, or login.</p>
+                                    <a href="/user/signin">Login</a>
+                                </div>
+                            )}
+                        </form>
+                    </Instructotron>
+                </div>
             );
         } else {
             return <Redirect to={`/user/profile/${username}`} />;
