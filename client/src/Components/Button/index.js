@@ -9,14 +9,6 @@ export function DeleteBtn(props) {
     </span>
     );
 }
-// This Form Button component allows us to use a bootstrap styled submit button with less syntax
-export function FormBtn(props) {
-    return (
-        <button className="btn btn-success form-btn" {...props}>
-            {props.children}
-        </button>
-    );
-}
 // This Authentication Button component allows us to use a consistently styled button for all authentication processes with less syntax
 export function AuthBtn(props) {
     return (
@@ -29,6 +21,22 @@ export function AuthBtn(props) {
 export function LogoutBtn(props) {
     return (
         <button className="btn btn-info btn-sm" {...props}>
+            {props.children}
+        </button>
+    );
+}
+// This Home Button component allows us to use a styled "Home" button with less syntax
+export function HomeBtn(props) {
+    return (
+        <button className="home-btn" {...props}>
+            {props.children}
+        </button>
+    );
+}
+// This Navbar Item Button component allows us to use a styled NavbarItem button with less syntax
+export function NavbarItem(props) {
+    return (
+        <button className="navbar-nav-item-btn" {...props}>
             {props.children}
         </button>
     );

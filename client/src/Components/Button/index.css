@@ -18,3 +18,36 @@
     margin: 10px 0px;
     cursor: pointer;
 }
+
+.home-btn {
+    display: block;
+    float: left;
+    background-color: #000000;
+    color: #61dafb;
+    border: none;
+    padding: 5px 35px;
+    margin: 1.5em 0px;
+    cursor: pointer;
+}
+
+.navbar-nav-item-btn {
+    display: block;
+    float: left;
+    background-color: #000000;
+    color: #61dafb;
+    border-right: 1px solid #61dafb;
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    padding: 5px 35px;
+    margin: 1.5em 0px;
+    cursor: pointer;
+}
+
+.navbar-nav-item-btn:first-child {
+    border-left: 1px solid #61dafb;
+}
+
+button:focus {
+    outline: none;
+}

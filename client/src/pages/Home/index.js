@@ -1,25 +1,43 @@
 import React, { Component } from 'react';
-import { Instructotron } from "../../components/Instructotron";
-import './index.css';
+import { AuthBtn } from '../../components/Button';
+import logo from '../../logo.svg';
+import axios from 'axios';
+import '../../App.css';
 
-class Home extends Component {
-    // Placeholder
+class Main extends Component {
+    // Set the initial state values
     state = {
-        loggedout: true
+        username: this.props.username
+    };
+
+    handleScrape = () => {
+        axios
+            .get('/api/events/scrape')
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
     };
 
     render() {
+        const { username } = this.state;
         return (
             <div>
-                <Instructotron height={"300px"}>
-                    <h1>Welcome to Womp and Chomp: electronic music event tracker.</h1>
-                    <a href="/user/signin" className="auth-link">Login </a>
-                    <a href="/user/signup" className="auth-link"> Register</a>
-                </Instructotron>
+                <div className="App">
+                    <header className="App-header">
+                        <h1>Welcome, {username}</h1>
+                        <img src={logo} className="App-logo" alt="logo" />
+                        <AuthBtn
+                            onClick={() => this.handleScrape()}>
+                            Scrape
+                        </AuthBtn>
+                    </header>
+                </div>
             </div>
         );
-
     }
 }
 
-export default Home;
+export default Main;

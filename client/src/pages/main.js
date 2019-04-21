@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { AuthBtn } from '../components/Button';
-import logo from '../logo.svg';
 import axios from 'axios';
-import '../App.css';
 import { Instructotron } from '../components/Instructotron';
+import Navbar from '../components/Navbar';
+import Home from './Home';
+import Events from './Events';
 
-class Test extends Component {
+class Main extends Component {
   // Set the initial state values
   state = {
     username: '',
+    currentPage: 'Home',
     loading: true,
     loggedIn: false,
     loginError: false
@@ -37,6 +38,24 @@ class Test extends Component {
         });
       });
   }
+
+  // Function to handle Sidebar Navigation
+  handlePageChange = page => {
+    this.setState({ currentPage: page });
+  };
+
+  // Function to handle rendering the correct walker page from Sidebar Nav
+  renderPage = () => {
+    switch (this.state.currentPage) {
+      case "Home": return <Home
+        username={this.state.username}
+      />;
+      case "Events": return <Events />;
+      default: return <Home
+        username={this.state.username}
+      />;
+    }
+  };
 
   handleScrape = () => {
     axios
@@ -75,26 +94,20 @@ class Test extends Component {
       return <Redirect to="/user/signin" />;
     } else {
       return (
-        <div className="App">
-          <header className="App-header">
-          <h1>Welcome, {username}</h1>
-            <img src={logo} className="App-logo" alt="logo" />
-            <a href="/events" className="auth-link">Events</a>
-            <AuthBtn
-              onClick={this.handleLogout}
-            >
-              Logout
-          </AuthBtn>
-            <AuthBtn
-              onClick={() => this.handleScrape()}>
-              Scrape
-          </AuthBtn>
-          </header>
-
+        <div>
+          <Navbar
+            username={username}
+            currentPage={this.state.currentPage}
+            handlePageChange={this.handlePageChange}
+            handleLogout={this.handleLogout}
+          />
+          <div className="main-content">
+            {this.renderPage()}
+          </div>
         </div>
       );
     }
   }
 }
 
-export default Test;
+export default Main;
