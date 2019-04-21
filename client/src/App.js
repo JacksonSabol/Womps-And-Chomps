@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import UserSignup from './pages/UserSignup';
 import UserLogin from './pages/UserLogin';
 import Test from './pages/test';
+import Events from './pages/Events';
 import './index.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route exact path="/user/signup" component={UserSignup} />
         <Route exact path="/user/signin" component={UserLogin} />
         <Route exact path="/user/profile/:username" component={Test} />
+        <Route exact path="/events/" component={Events} />
       </div>
     </Router>
   );

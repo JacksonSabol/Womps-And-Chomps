@@ -66,7 +66,7 @@ class Test extends Component {
     const { username, loading, loggedIn } = this.state;
     if (loading) {
       return (
-        <Instructotron>
+        <Instructotron height="200px">
           <h1>Loading...</h1>
         </Instructotron>
       );
@@ -79,6 +79,7 @@ class Test extends Component {
           <header className="App-header">
           <h1>Welcome, {username}</h1>
             <img src={logo} className="App-logo" alt="logo" />
+            <a href="/events" className="auth-link">Events</a>
             <AuthBtn
               onClick={this.handleLogout}
             >
