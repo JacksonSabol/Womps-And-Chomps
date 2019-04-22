@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import Background from '../../components/Background';
-import { Instructotron } from "../../components/Instructotron";
-import { AuthBtn } from "../../components/Button";
-import { AuthInput } from "../../components/Form";
+import { Instructotron } from "../../Components/Instructotron";
+import { AuthBtn } from "../../Components/Button";
+import { AuthInput } from "../../Components/Form";
 import axios from 'axios';
 import './index.css';
 
@@ -80,7 +79,6 @@ class UserSignup extends Component {
         if (unregistered) {
             return (
                 <div>
-                    <Background />
                     <Instructotron height={"450px"}>
                         <h1>Register</h1>
                         <a href="/" className="auth-link">Home </a>

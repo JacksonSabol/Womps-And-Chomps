@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './index.css';
-import { Instructotron } from '../../components/Instructotron';
-import { List, ListItem } from '../../components/List';
+import { Instructotron } from '../../Components/Instructotron';
+import { List, ListItem } from '../../Components/List';
 
 class Events extends Component {
     // Set the initial state values

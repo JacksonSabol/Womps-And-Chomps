@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
-import Background from '../../components/Background';
-import { Instructotron } from '../../components/Instructotron';
-import Navbar from '../../components/Navbar';
+import { Instructotron } from '../../Components/Instructotron';
+import Navbar from '../../Components/Navbar';
 import Home from '../Home';
 import Events from '../Events';
 
@@ -86,12 +85,9 @@ class Main extends Component {
     const { username, loading, loggedIn } = this.state;
     if (loading) {
       return (
-        <div>
-          <Background />
-          <Instructotron height="200px">
-            <h1>Loading...</h1>
-          </Instructotron>
-        </div>
+        <Instructotron height="200px">
+          <h1>Loading...</h1>
+        </Instructotron>
       );
     }
     else if (!loggedIn) {
@@ -99,7 +95,6 @@ class Main extends Component {
     } else {
       return (
         <div>
-          <Background />
           <Navbar
             username={username}
             currentPage={this.state.currentPage}

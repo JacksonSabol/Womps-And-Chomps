@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AuthBtn } from '../../components/Button';
+import { AuthBtn } from '../../Components/Button';
 import logo from '../../logo.svg';
 import axios from 'axios';
 import '../../App.css';
