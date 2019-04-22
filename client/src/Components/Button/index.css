@@ -43,6 +43,12 @@
     margin: 1.5em 0px;
     cursor: pointer;
 }
+@media screen and (max-width: 768px) {
+    .navbar-nav-item-btn {
+        padding: 1.6em 0.5em;
+        margin: 0;
+    }
+}
 
 .navbar-nav-item-btn:first-child {
     border-left: 1px solid #61dafb;

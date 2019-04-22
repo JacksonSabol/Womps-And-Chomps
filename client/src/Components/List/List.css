@@ -1,5 +1,5 @@
 .list-overflow-container {
-  max-height: 500px;
+  max-height: 75vh;
   border-radius: 4px;
   overflow-y: scroll;
   overflow-x: hidden;
