@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import Background from '../../components/Background';
 import { Instructotron } from "../../components/Instructotron";
 import { AuthBtn } from "../../components/Button";
 import { AuthInput } from "../../components/Form";
@@ -58,6 +59,7 @@ class UserLogin extends Component {
         if (loggedout) {
             return (
                 <div>
+                    <Background />
                     <Instructotron height={"370px"}>
                         <h1>Login</h1>
                         <a href="/" className="auth-link">Home </a>

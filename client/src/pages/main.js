@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
+import Background from '../components/Background';
 import { Instructotron } from '../components/Instructotron';
 import Navbar from '../components/Navbar';
 import Home from './Home';
@@ -85,9 +86,12 @@ class Main extends Component {
     const { username, loading, loggedIn } = this.state;
     if (loading) {
       return (
-        <Instructotron height="200px">
-          <h1>Loading...</h1>
-        </Instructotron>
+        <div>
+          <Background />
+          <Instructotron height="200px">
+            <h1>Loading...</h1>
+          </Instructotron>
+        </div>
       );
     }
     else if (!loggedIn) {
@@ -95,6 +99,7 @@ class Main extends Component {
     } else {
       return (
         <div>
+          <Background />
           <Navbar
             username={username}
             currentPage={this.state.currentPage}
