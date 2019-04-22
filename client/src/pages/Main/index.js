@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
-import Background from '../components/Background';
-import { Instructotron } from '../components/Instructotron';
-import Navbar from '../components/Navbar';
-import Home from './Home';
-import Events from './Events';
+import Background from '../../components/Background';
+import { Instructotron } from '../../components/Instructotron';
+import Navbar from '../../components/Navbar';
+import Home from '../Home';
+import Events from '../Events';
 
 class Main extends Component {
   // Set the initial state values

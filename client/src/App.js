@@ -4,7 +4,7 @@ import history from './history/history';
 import Splash from './pages/Splash';
 import UserSignup from './pages/UserSignup';
 import UserLogin from './pages/UserLogin';
-import Main from './pages/main';
+import Main from './pages/Main';
 import './index.css';
 
 function App() {
