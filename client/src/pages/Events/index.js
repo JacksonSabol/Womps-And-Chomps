@@ -17,7 +17,6 @@ class Events extends Component {
         await axios
             .get('/api/events/all')
             .then(response => {
-                console.log(response);
                 this.setState({
                     loading: false,
                     username: this.props.username,

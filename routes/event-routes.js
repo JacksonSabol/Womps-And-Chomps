@@ -23,7 +23,7 @@ module.exports = function (app) {
     app.get("/api/events/all", loggedIn, function (req, res) {
         db.Event.find({})
             // Sort by date
-            .sort({ sortDate: -1 })
+            .sort('field sortDate')
             .then(dbEvents => res.json(dbEvents))
             .catch(err => res.status(422).json(err));
     });
@@ -61,15 +61,10 @@ module.exports = function (app) {
     // GET route for scraping data from 19hz
     app.get("/api/events/scrape", function (req, res, next) {
         // Make an HTTP request via axios for 19hz's "San Francisco Bay Area / Northern California" list
-        axios.get("https://19hz.info/eventlisting_BayArea.php").then(function (response) {
+        axios.get("https://19hz.info/eventlisting_BayArea.php").then(function (res) {
             // Load the HTML into cheerio and save it to a variable
             // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
-            const $ = cheerio.load(response.data);
-
-            // Define empty arrays to receive each Event entry
-            // var upcomingResults = [];
-            // var recurringResults = [];
-
+            const $ = cheerio.load(res.data);
             // Isolate the desired values (i: iterator. element: the current element)
             $("table").each(function (i, element) {
                 if (i === 0) {
@@ -86,10 +81,6 @@ module.exports = function (app) {
                         result.externalLinkTitle = $(element).children('td').eq(5).text();
                         result.externalLink = $(element).children('td').eq(5).children("a").attr("href");
                         result.sortDate = $(element).children('td').eq(6).children("div").text();
-                        // console.log("Result at " + i + " for upcoming events\n", result);
-
-                        // Push each `result` object into the upcomingResults array we defined earlier
-                        // upcomingResults.push(result);
 
                         // Insert a new Event into the Event collection using the `result` object built from scraping
                         db.Event.create(result)
@@ -106,9 +97,8 @@ module.exports = function (app) {
                     });
                 }
             });
-            // Log the results once you've looped through each of the elements found with cheerio
-            // console.log("Upcoming\n", upcomingResults);
-            // console.log("Recurring\n", recurringResults);
+
         });
+        res.status(200).send('Scrape complete');
     });
 };

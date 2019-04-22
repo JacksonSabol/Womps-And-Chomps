@@ -57,17 +57,6 @@ class Main extends Component {
     }
   };
 
-  handleScrape = () => {
-    axios
-      .get('/api/events/scrape')
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
-
   handleLogout = () => {
     axios
       .post('/user/logout')

@@ -7,14 +7,15 @@ import '../../App.css';
 class Main extends Component {
     // Set the initial state values
     state = {
-        username: this.props.username
+        username: this.props.username,
+        scrapeComplete: false
     };
 
     handleScrape = () => {
         axios
             .get('/api/events/scrape')
             .then(response => {
-                console.log(response);
+                this.setState({ scrapeComplete: true });
             })
             .catch(error => {
                 console.log(error);
@@ -22,7 +23,7 @@ class Main extends Component {
     };
 
     render() {
-        const { username } = this.state;
+        const { username, scrapeComplete } = this.state;
         return (
             <div>
                 <div className="App">
@@ -33,6 +34,11 @@ class Main extends Component {
                             onClick={() => this.handleScrape()}>
                             Scrape
                         </AuthBtn>
+                        {scrapeComplete && (
+                            <div className="auth-alert">
+                                <p className="form-alert">Scrape complete! Visit the Events page to see the most recent events added.</p>
+                            </div>
+                        )}
                     </header>
                 </div>
             </div>

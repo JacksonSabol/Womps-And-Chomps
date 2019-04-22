@@ -45,7 +45,6 @@ class UserSignup extends Component {
                     password: this.state.password
                 })
                 .then(response => {
-                    console.log(response);
                     this.setState({
                         unregistered: false,
                         showError: false,
@@ -54,8 +53,6 @@ class UserSignup extends Component {
                     });
                 })
                 .catch(error => {
-                    console.log(error.response)
-                    console.log(error.response.data);
                     if (error.response.data === "Unauthorized") {
                         this.setState({
                             showError: true,
