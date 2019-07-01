@@ -23,12 +23,12 @@ class Main extends Component {
     };
 
     render() {
-        const { username, scrapeComplete } = this.state;
+        const { scrapeComplete } = this.state;
         return (
             <div>
                 <div className="App">
                     <header className="App-header">
-                        <h1>Welcome, {username}</h1>
+                        {/* <h1>Welcome, {username}</h1> */}
                         <img src={logo} className="App-logo" alt="logo" />
                         <AuthBtn
                             onClick={() => this.handleScrape()}>

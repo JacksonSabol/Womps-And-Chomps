@@ -4,6 +4,8 @@ const cheerio = require("cheerio");
 const axios = require("axios");
 // Require all models
 const db = require("../models");
+// Require Moment to return events based on what day is is
+const moment = require('moment')
 // Helper function to check if user is logged in
 function loggedIn(req, res, next) {
     // This checks to see if Passport successfully loaded the user from the session id and wrote it to the request
@@ -19,9 +21,15 @@ function loggedIn(req, res, next) {
 }
 
 module.exports = function (app) {
+    // Set the start of the day for querying
+    const today = moment().startOf('day')
     // GET route for retrieving all documents in the Events collection
     app.get("/api/events/all", loggedIn, function (req, res) {
-        db.Event.find({})
+        db.Event.find({
+            sortDate: {
+                $gte: today.toDate()
+            }
+        })
             // Sort by date
             .sort('field sortDate')
             .then(dbEvents => res.json(dbEvents))

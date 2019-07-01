@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './index.css';
 import { Instructotron } from '../../Components/Instructotron';
-import { List, ListItem } from '../../Components/List';
+// import { List, ListItem } from '../../Components/List';
+import { EventCard } from '../../Components/Card';
 
 class Events extends Component {
     // Set the initial state values
@@ -50,16 +51,18 @@ class Events extends Component {
                         <div className="events-section">
                             <h1>Upcoming Events:</h1>
                             {events.length ? (
-                                <List>
+                                <div className="container">
                                     <h5>Events In Northern California:</h5>
                                     {events.map(event => (
-                                        <ListItem key={event._id}>
-                                            <a href={event.link} target="_blank" rel="noopener noreferrer">
-                                                <strong>{event.title}</strong> - {event.dateAndTime}
-                                            </a>
-                                        </ListItem>
+                                        <EventCard key={event._id}
+                                            _id={event._id}
+                                            link={event.link}
+                                            title={event.title}
+                                            dateAndTime={event.dateAndTime}
+                                            fullTitle={event.fullTitle}
+                                        />
                                     ))}
-                                </List>
+                                </div>
                             ) : (
                                     <h3>No Results to Display. Click on the Scrape Button to Populate the Database.</h3>
                                 )}

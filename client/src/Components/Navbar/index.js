@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import './index.css';
-import { HomeBtn, NavbarItem } from '../Button';
+import { NavbarItem } from '../Button';
 
 class Navbar extends Component {
   // Set the initial state value for responsive hamburger menu
@@ -9,10 +9,9 @@ class Navbar extends Component {
   };
 
   toggleMenu = () => {
-    const reverse = (this.state.toggled) ? false : true;
-    this.setState({
-      toggled: reverse
-    });
+    this.setState(state => ({
+      toggled: !state.toggled
+    }));
   }
 
   render() {
@@ -31,10 +30,10 @@ class Navbar extends Component {
           </div>
         </div>
         <div className={`navbar-nav ${navbarToggled}`}>
-          <HomeBtn onClick={() => this.props.handlePageChange("Home")}>
-            {/* <img src={logo} className="navbar-brand-logo" alt="^_^" /> */}
+          {/* <HomeBtn onClick={() => this.props.handlePageChange("Home")}>
             Logo
-          </HomeBtn>
+          </HomeBtn> */}
+          <a href="/" className="home-logo">{`W&P`}</a>
           <NavbarItem
             onClick={() => this.props.handlePageChange("Home")}
           >
