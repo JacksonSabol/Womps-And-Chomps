@@ -13,3 +13,8 @@
     margin-top: 100px;
     margin-bottom: 0px;
 }
+.event-area {
+    position: relative;
+    display: block;
+    overflow: hidden;
+}

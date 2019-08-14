@@ -2,7 +2,7 @@ import React from "react";
 import "./index.css";
 
 // This Card component allows us to use a styled card for events with less syntax
-export function EventCard(props) {
+export function EventBanner(props) {
     return (
         <div>
             <div className="row">

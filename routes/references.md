@@ -1,0 +1,1 @@
+https://graph.facebook.com/{event_id}/picture
