@@ -6,12 +6,12 @@ import { EventCard } from '../../Components/EventCard';
 // import bgOne from '../../media/slider/1.jpg';
 // import bgTwo from '../../media/slider/2.jpg';
 import bgThr from '../../media/slider/3.jpg';
-import bgFou from '../../media/slider/4.jpg';
-import bgFiv from '../../media/slider/5.jpg';
-import bgSix from '../../media/slider/6.jpg';
+// import bgFou from '../../media/slider/4.jpg';
+// import bgFiv from '../../media/slider/5.jpg';
+// import bgSix from '../../media/slider/6.jpg';
 // import bgSev from '../../media/slider/7.jpg';
 // import bgEig from '../../media/slider/8.jpg';
-import bgNin from '../../media/slider/9.jpg';
+// import bgNin from '../../media/slider/9.jpg';
 // import bgTen from '../../media/slider/10.jpg';
 // import eventBG from '../../media/eventBG.jpg';
 
@@ -28,30 +28,18 @@ class Events extends Component {
         await axios
             .get('/api/events/all')
             .then(response => {
-                // console.log(response.data);
-                const eventData = response.data.map((event, index) => {
-                    if ((index + 1) === 1 || index % 5 === 0) {
-                        event.img = bgThr;
-                        return event;
-                    } else if ((index + 1) === 2 || (index - 1) % 5 === 0 ) {
-                        event.img = bgFou;
-                        return event;
-                    } else if ((index + 1) === 3 || (index - 2) % 5 === 0 ) {
-                        event.img = bgFiv;
-                        return event;
-                    } else if ((index + 1) === 4 || (index - 3) % 5 === 0 ) {
-                        event.img = bgSix;
-                        return event;
-                    } else {
-                        event.img = bgNin;
-                        return event;
+                console.log(response.data);
+                const eventData = response.data.map((event) => {
+                    if (event.imgSrc === "N/A" || !event.imgSrc) {
+                        event.imgSrc = bgThr;
                     }
+                    return event;
                 });
                 console.log(eventData);
                 this.setState({
                     loading: false,
                     username: this.props.username,
-                    events: response.data
+                    events: eventData
                 });
             })
             .catch(error => {
@@ -92,7 +80,7 @@ class Events extends Component {
                                                 priceAndAges={event.priceAndAges}
                                                 fullTitle={event.fullTitle}
                                                 organizers={event.organizers}
-                                                bgImg={event.img}
+                                                bgImg={event.imgSrc}
                                                 alt={`No Image Available`}
                                             />
                                         ))}

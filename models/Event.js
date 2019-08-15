@@ -26,6 +26,10 @@ const EventSchema = new Schema({
         type: String,
         required: true
     },
+    // `imgSrc` is of type String for the source of the background image
+    imgSrc: {
+        type: String
+    },
     // `tags` is of type String for the tags of the Event
     tags: {
         type: String,

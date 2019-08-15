@@ -1,7 +1,12 @@
 // Import cheerio to parse the HTML and find elements
 const cheerio = require("cheerio");
-// Import axios to make the HTTP request for the HTML page
+// Import axios to make HTTP requests
 const axios = require("axios");
+// Import request-promise to make HTTP requests in parallel
+const request = require("request-promise");
+// Import helper functions for link splitting and retrieving images
+const getFacebookImage = require("./link-splitting").getFacebookImage;
+const splitUrl = require("./link-splitting").splitUrl;
 // Require all models
 const db = require("../models");
 // Require Moment to return events based on what day is is
@@ -66,47 +71,105 @@ module.exports = function (app) {
             // .catch(err => res.status(422).json(err));
             .catch(err => console.log(err));
     });
-    // GET route for scraping data from 19hz
+    // new GET route for scraping data from 19hz and adding FB photos
     app.get("/api/events/scrape", function (req, res, next) {
-        // Make an HTTP request via axios for 19hz's "San Francisco Bay Area / Northern California" list
-        axios.get("https://19hz.info/eventlisting_BayArea.php").then(function (res) {
-            // Load the HTML into cheerio and save it to a variable
-            // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
-            const $ = cheerio.load(res.data);
-            // Isolate the desired values (i: iterator. element: the current element)
-            $("table").each(function (i, element) {
-                if (i === 0) {
-                    $(element).find("tr").each(function (i, element) {
-                        // Define an empty object to save the data that we'll scrape
-                        var result = {};
-                        result.dateAndTime = $(element).children('td').eq(0).text();
-                        result.title = $(element).children('td').eq(1).children("a").text();
-                        result.fullTitle = $(element).children('td').eq(1).text();
-                        result.link = $(element).children('td').eq(1).children("a").attr("href");
-                        result.tags = $(element).children('td').eq(2).text();
-                        result.priceAndAges = $(element).children('td').eq(3).text();
-                        result.organizers = $(element).children('td').eq(4).text();
-                        result.externalLinkTitle = $(element).children('td').eq(5).text();
-                        result.externalLink = $(element).children('td').eq(5).children("a").attr("href");
-                        result.sortDate = $(element).children('td').eq(6).children("div").text();
-
-                        // Insert a new Event into the Event collection using the `result` object built from scraping
-                        db.Event.create(result)
-                            .then(function (dbEvent) {
-                                // View the added result in the console
-                                console.log(dbEvent);
-                            })
-                            .catch(function (err) {
-                                // If an error occurred, log it
-                                console.log(err);
-                                // Move to the next entry if an error occurs (duplicates)
-                                next();
+        (async function () {
+            try {
+                const url = "https://19hz.info/eventlisting_BayArea.php";
+                const baseHtml = await request(url);
+                const $ = cheerio.load(baseHtml);
+                const table = $('table').slice(0, 1);
+                const eventData = $(table).find('tr').map((i, row) => {
+                    const formattedData = {};
+                    formattedData.dateAndTime = $(row).children('td').eq(0).text();
+                    formattedData.title = $(row).children('td').eq(1).children("a").text();
+                    formattedData.fullTitle = $(row).children('td').eq(1).text();
+                    formattedData.link = $(row).children('td').eq(1).children("a").attr("href");
+                    formattedData.tags = $(row).children('td').eq(2).text();
+                    formattedData.priceAndAges = $(row).children('td').eq(3).text();
+                    formattedData.organizers = $(row).children('td').eq(4).text();
+                    formattedData.externalLinkTitle = $(row).children('td').eq(5).text();
+                    formattedData.externalLink = $(row).children('td').eq(5).children("a").attr("href");
+                    formattedData.sortDate = $(row).children('td').eq(6).children("div").text();
+                    return formattedData;
+                }).get();
+                await Promise.all(eventData.map(async (event) => {
+                    try {
+                        const url = event.link ? event.link : "w.N/A.w";
+                        const urlMod = await splitUrl(url);
+                        if (urlMod === "facebook") {
+                            await getFacebookImage(url, function (source) {
+                                event.imgSrc = source;
                             });
+                        } else {
+                            event.imgSrc = "N/A"
+                        }
+                        return event;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                }));
+                console.log(eventData);
+                db.Event.insertMany(eventData, { ordered: false })
+                    .then(function (dbResponse) {
+                        // View the added results in the console
+                        console.log(dbResponse);
+                        res.status(200).send(`Scrape complete. ${dbResponse.length} events inserted.`);
+                    })
+                    .catch(function (err) {
+                        // If an error occurred, log it
+                        console.log(err);
+                        // Move to the next entry if an error occurs (duplicates)
+                        // next();
                     });
-                }
-            });
-
-        });
-        res.status(200).send('Scrape complete');
+                // , function(error, docs) {});
+            } catch (e) {
+                console.log(e.message);
+            }
+        })();
     });
+
+    // old GET route for scraping data from 19hz
+    // app.get("/api/events/scrape", function (req, res, next) {
+    //     // Make an HTTP request via axios for 19hz's "San Francisco Bay Area / Northern California" list
+    //     axios.get("https://19hz.info/eventlisting_BayArea.php").then(function (res) {
+    //         // Load the HTML into cheerio and save it to a variable
+    //         // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
+    //         const $ = cheerio.load(res.data);
+    //         // Isolate the desired values (i: iterator. element: the current element)
+    //         $("table").each(function (i, element) {
+    //             if (i === 0) {
+    //                 $(element).find("tr").each(function (i, element) {
+    //                     // Define an empty object to save the data that we'll scrape
+    //                     var result = {};
+    //                     result.dateAndTime = $(element).children('td').eq(0).text();
+    //                     result.title = $(element).children('td').eq(1).children("a").text();
+    //                     result.fullTitle = $(element).children('td').eq(1).text();
+    //                     result.link = $(element).children('td').eq(1).children("a").attr("href");
+    //                     result.tags = $(element).children('td').eq(2).text();
+    //                     result.priceAndAges = $(element).children('td').eq(3).text();
+    //                     result.organizers = $(element).children('td').eq(4).text();
+    //                     result.externalLinkTitle = $(element).children('td').eq(5).text();
+    //                     result.externalLink = $(element).children('td').eq(5).children("a").attr("href");
+    //                     result.sortDate = $(element).children('td').eq(6).children("div").text();
+
+    //                     // Insert a new Event into the Event collection using the `result` object built from scraping
+    //                     db.Event.create(result)
+    //                         .then(function (dbEvent) {
+    //                             // View the added result in the console
+    //                             console.log(dbEvent);
+    //                         })
+    //                         .catch(function (err) {
+    //                             // If an error occurred, log it
+    //                             console.log(err);
+    //                             // Move to the next entry if an error occurs (duplicates)
+    //                             next();
+    //                         });
+    //                 });
+    //             }
+    //         });
+
+    //     });
+    //     res.status(200).send('Scrape complete');
+    // });
 };
