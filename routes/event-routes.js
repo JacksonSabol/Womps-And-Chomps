@@ -72,7 +72,7 @@ module.exports = function (app) {
             .catch(err => console.log(err));
     });
     // new GET route for scraping data from 19hz and adding FB photos
-    app.get("/api/events/scrape", function (req, res, next) {
+    app.get("/api/events/scrape", loggedIn, function (req, res, next) {
         (async function () {
             try {
                 const url = "https://19hz.info/eventlisting_BayArea.php";
@@ -109,16 +109,18 @@ module.exports = function (app) {
                         console.log(e);
                     }
                 }));
-                console.log(eventData);
+                // console.log(eventData);
                 db.Event.insertMany(eventData, { ordered: false })
                     .then(function (dbResponse) {
                         // View the added results in the console
-                        console.log(dbResponse);
+                        // console.log(dbResponse);
                         res.status(200).send(`Scrape complete. ${dbResponse.length} events inserted.`);
                     })
                     .catch(function (err) {
                         // If an error occurred, log it
                         console.log(err);
+                        console.log("write errors", err.writeErrors.length);
+                        res.status(400).send(`Scrape complete. ${err.writeErrors.length} duplicate entries.`);
                         // Move to the next entry if an error occurs (duplicates)
                         // next();
                     });
