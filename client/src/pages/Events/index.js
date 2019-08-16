@@ -28,14 +28,14 @@ class Events extends Component {
         await axios
             .get('/api/events/all')
             .then(response => {
-                console.log(response.data);
+                // console.log(response.data);
                 const eventData = response.data.map((event) => {
                     if (event.imgSrc === "N/A" || !event.imgSrc) {
                         event.imgSrc = bgThr;
                     }
                     return event;
                 });
-                console.log(eventData);
+                // console.log(eventData);
                 this.setState({
                     loading: false,
                     username: this.props.username,
@@ -43,7 +43,7 @@ class Events extends Component {
                 });
             })
             .catch(error => {
-                console.log(error);
+                console.log(error.message);
                 this.setState({
                     loading: false,
                     loginError: true

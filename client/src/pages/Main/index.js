@@ -3,11 +3,10 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Instructotron } from '../../Components/Instructotron';
 import Navbar from '../../Components/Navbar';
-import Home from '../Home';
+import UserHome from '../UserHome';
 import Events from '../Events';
 
 class Main extends Component {
-  // Set the initial state values
   state = {
     username: '',
     currentPage: 'Home',
@@ -39,19 +38,17 @@ class Main extends Component {
       });
   }
 
-  // Function to handle Sidebar Navigation
   handlePageChange = page => {
     this.setState({ currentPage: page });
   };
 
-  // Function to handle rendering the correct walker page from Sidebar Nav
   renderPage = () => {
     switch (this.state.currentPage) {
-      case "Home": return <Home
+      case "Home": return <UserHome
         username={this.state.username}
       />;
       case "Events": return <Events />;
-      default: return <Home
+      default: return <UserHome
         username={this.state.username}
       />;
     }

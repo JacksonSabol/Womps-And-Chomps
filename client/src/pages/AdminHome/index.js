@@ -4,8 +4,7 @@ import logo from '../../logo.svg';
 import axios from 'axios';
 import '../../App.css';
 
-class Main extends Component {
-    // Set the initial state values
+class AdminHome extends Component {
     state = {
         username: this.props.username,
         scrapeComplete: false
@@ -28,7 +27,6 @@ class Main extends Component {
             <div>
                 <div className="App">
                     <header className="App-header">
-                        {/* <h1>Welcome, {username}</h1> */}
                         <img src={logo} className="App-logo" alt="logo" />
                         <AuthBtn
                             onClick={() => this.handleScrape()}>
@@ -46,4 +44,4 @@ class Main extends Component {
     }
 }
 
-export default Main;
+export default AdminHome;
