@@ -6,6 +6,7 @@ export function EventCard(props) {
     return (
         <div className="event-card-container">
             <div className="single-event">
+                <button className="save-btn" onClick={() => props.handleSaveEvent(props.eventId)}>+</button>
                 <div className="card-bg" style={{ backgroundImage: `url("${props.bgImg}")` }}></div>
                 <div className="event-details">
                     <div className="event-meta">

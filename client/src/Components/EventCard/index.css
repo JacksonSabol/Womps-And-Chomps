@@ -10,7 +10,6 @@
     width: 100%;
     height: 100%;
     transform: scale(0.8, 0.8);
-    cursor: pointer;
     background: #ffffff;
     border: 1px solid #eee;
     position: relative;
@@ -31,14 +30,41 @@
     background-position: center center;
 }
 
-.single-event .event-details {
-    padding: 25px;
+.single-event .save-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    z-index: 9;
+    cursor: pointer;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";       /* IE 8 */
+    filter: alpha(opacity=0);  /* IE 5-7 */
+    -moz-opacity: 0;          /* Netscape */
+    -khtml-opacity: 0;        /* Safari 1.x */
+	opacity: 0;				  /* Good Browsers */
+    -webkit-transition: all 0.4s;
+	-o-transition: all 0.4s;
+	transition: all 0.4s;
 }
 
 .single-event:hover {
     transform: scale(1, 1);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     border: 1px solid transparent;
+}
+.single-event:hover .save-btn {
+    width: 10%;
+    height: 10%;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=1)";       /* IE 8 */
+    filter: alpha(opacity=1);  /* IE 5-7 */
+    -moz-opacity: 1;          /* Netscape */
+    -khtml-opacity: 1;        /* Safari 1.x */
+	opacity: 1;				  /* Good Browsers */
+}
+
+.single-event .event-details {
+    padding: 25px;
 }
 
 /* .single-event:hover:before {

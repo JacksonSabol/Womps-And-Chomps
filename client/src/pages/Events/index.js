@@ -24,6 +24,15 @@ class Events extends Component {
         loginError: false
     };
 
+    handleSaveEvent = eventId => {
+        axios
+            .put(`/api/events/save/${eventId}`)
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => console.log(error));
+    };
+
     async componentDidMount() {
         await axios
             .get('/api/events/all')
@@ -70,20 +79,21 @@ class Events extends Component {
                             <h1>Upcoming Events:</h1>
                             {events.length ? (
                                 <section className="event-area">
-                                        <h5>Events In Northern California:</h5>
-                                        {events.map(event => (
-                                            <EventCard key={event._id}
-                                                _id={event._id}
-                                                link={event.link}
-                                                title={event.title}
-                                                dateAndTime={event.dateAndTime}
-                                                priceAndAges={event.priceAndAges}
-                                                fullTitle={event.fullTitle}
-                                                organizers={event.organizers}
-                                                bgImg={event.imgSrc}
-                                                alt={`No Image Available`}
-                                            />
-                                        ))}
+                                    <h5>Events In Northern California:</h5>
+                                    {events.map(event => (
+                                        <EventCard key={event._id}
+                                            eventId={event._id}
+                                            link={event.link}
+                                            title={event.title}
+                                            dateAndTime={event.dateAndTime}
+                                            priceAndAges={event.priceAndAges}
+                                            fullTitle={event.fullTitle}
+                                            organizers={event.organizers}
+                                            bgImg={event.imgSrc}
+                                            alt={`No Image Available`}
+                                            handleSaveEvent={this.handleSaveEvent}
+                                        />
+                                    ))}
                                 </section>
                             ) : (
                                     <h3>No Results to Display. Click on the Scrape Button to Populate the Database.</h3>

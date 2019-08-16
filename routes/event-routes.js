@@ -50,6 +50,20 @@ module.exports = function (app) {
             // .catch(err => res.status(422).json(err));
             .catch(err => console.log(err));
     });
+    // PUT route for "saving" an event
+    app.put("/api/events/save/:id", loggedIn, function (req, res) {
+        // Find the event in the database and return it if it exists
+        db.Event.findOne({ _id: req.params.id })
+            .then(dbEvent => {
+                // Add the event _id to the array of events in the User collection
+                // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
+                return db.User.findOneAndUpdate({ _id: req.user.id }, { $push: { events: dbEvent._id } }, { new: true });
+            })
+            .then(function (dbUser) {
+                res.json(dbUser);
+            })
+            .catch(err => console.log(err));
+    });
     // PUT route for "unsaving" an event
     app.put("/api/events/edit/:id", loggedIn, function (req, res) {
         // Grab the document in the User collection where the _id is equal to the id of the logged in user
