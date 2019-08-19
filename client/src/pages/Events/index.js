@@ -90,6 +90,7 @@ class Events extends Component {
                                             fullTitle={event.fullTitle}
                                             organizers={event.organizers}
                                             bgImg={event.imgSrc}
+                                            favorite={false}
                                             alt={`No Image Available`}
                                             handleSaveEvent={this.handleSaveEvent}
                                         />

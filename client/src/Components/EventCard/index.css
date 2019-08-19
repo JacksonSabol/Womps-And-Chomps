@@ -35,14 +35,13 @@
 
 .single-event .save-btn {
     position: absolute;
-    top: 1%;
-    right: 1%;
-    width: 30px;
-    height: 30px;
+    top: 5%;
+    right: 5%;
+    width: 40px;
+    height: 40px;
+    padding: 5px;
     z-index: 9;
-    color: #61dafb;
     background: none;
-    background-color: #222222;
     border: 1px solid transparent;
     border-radius: 50%;
     cursor: pointer;
@@ -55,13 +54,19 @@
 	-o-transition: opacity 1s;
 	transition: opacity 1s;
 }
-.save-btn:hover {
-    background-color: #555555;
+.save-btn .save-heart {
+    width: 100%;
+    height: 100%;
+    background: url("../../media/heart.svg") no-repeat center center;
+    background-size: cover;
+}
+.save-btn:hover .save-heart {
+    filter: url('../../media/heart.svg#change-fill-on-hover');
 }
 .save-btn .tooltiptext {
     visibility: hidden;
     position: absolute;
-    width: 120px;
+    width: 80px;
     background-color: #555;
     color: #fff;
     text-align: center;
@@ -70,9 +75,9 @@
     z-index: 1;
     opacity: 0;
     top: 135%;
-    left: 50%;
+    left: 80%;
     margin-left: -60px;
-    transition: opacity .6s;
+    transition: opacity .6s ease 1s;
 }
 .save-btn:hover .tooltiptext {
     visibility: visible;
@@ -83,7 +88,7 @@
     content: "";
     position: absolute;
     bottom: 100%;
-    left: 50%;
+    left: 61%;
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
@@ -92,7 +97,18 @@
 
 .single-event:hover {
     transform: scale(1, 1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 10px 0 0 0 #222222 inset; */
+    /* box-shadow: rgba(0,0,0, 0.1)0 10px 30px; */
+}
+.single-event:hover::after {
+    position: absolute;
+    top: 0;
+    content: '';
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 70px 50px 0 #00000090;
+    display: block;
+    pointer-events: none;
 }
 .single-event:hover .save-btn {
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=1)";       /* IE 8 */
@@ -103,7 +119,7 @@
 }
 
 .single-event .event-details {
-    padding: 25px;
+    padding: 82% 25px 0 25px;
 }
 
 .single-event .event-details .event-meta {
@@ -114,13 +130,17 @@
     text-transform: uppercase;
 }
 
-.single-event h5 {
+.single-event .event-details h5 {
     font-size: 18px;
-    margin-top: 99%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-.single-event h5 a {
+.single-event .event-details h5 a {
     color: #ffffff;
+    /* margin-top: 99%; */
     font-size: 18px;
+    font-weight: bold;
     line-height: 27px;
 }
 /* Medium screen : 992px. */
