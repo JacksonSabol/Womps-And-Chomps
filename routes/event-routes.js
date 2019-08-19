@@ -15,6 +15,7 @@ const moment = require('moment')
 function loggedIn(req, res, next) {
     // This checks to see if Passport successfully loaded the user from the session id and wrote it to the request
     if (req.user) {
+        console.log(req.user);
         // If so, move on to the next step
         next();
     }
@@ -24,6 +25,15 @@ function loggedIn(req, res, next) {
         res.status(404).send('User not found');
     }
 }
+// function adminLoggedIn(req, res, next) {
+//     if (req.user && req.user.role === "admin") {
+//         next();
+//     }
+//     else {
+//         console.log("Login was not conserved");
+//         res.status(404).send('User not found');
+//     }
+// }
 
 module.exports = function (app) {
     // Set the start of the day for querying
@@ -86,6 +96,8 @@ module.exports = function (app) {
             .catch(err => console.log(err));
     });
     // new GET route for scraping data from 19hz and adding FB photos
+    // app.get("/api/events/scrape", adminLoggedIn, function (req, res, next) {
+    // Parse out venue from fullTitle and add to new field - split on '@'
     app.get("/api/events/scrape", loggedIn, function (req, res, next) {
         (async function () {
             try {
