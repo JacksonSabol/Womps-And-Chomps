@@ -5,6 +5,7 @@ import { Instructotron } from '../../Components/Instructotron';
 import Navbar from '../../Components/Navbar';
 import UserHome from '../UserHome';
 import Events from '../Events';
+import Favorites from '../Favorites';
 
 class Main extends Component {
   state = {
@@ -48,6 +49,7 @@ class Main extends Component {
         username={this.state.username}
       />;
       case "Events": return <Events />;
+      case "Favorites": return <Favorites />;
       default: return <UserHome
         username={this.state.username}
       />;

@@ -3,53 +3,46 @@ import axios from 'axios';
 import './index.css';
 import { Instructotron } from '../../Components/Instructotron';
 import { EventCard } from '../../Components/EventCard';
-// import bgOne from '../../media/slider/1.jpg';
-// import bgTwo from '../../media/slider/2.jpg';
 import bgThr from '../../media/slider/3.jpg';
-// import bgFou from '../../media/slider/4.jpg';
-// import bgFiv from '../../media/slider/5.jpg';
-// import bgSix from '../../media/slider/6.jpg';
-// import bgSev from '../../media/slider/7.jpg';
-// import bgEig from '../../media/slider/8.jpg';
-// import bgNin from '../../media/slider/9.jpg';
-// import bgTen from '../../media/slider/10.jpg';
-// import eventBG from '../../media/eventBG.jpg';
 
-class Events extends Component {
+class Favorites extends Component {
     // Set the initial state values
     state = {
         username: '',
-        events: [],
+        favorites: [],
         loading: true,
         loginError: false
     };
 
-    handleSaveEvent = eventId => {
+    handleUnsaveEvent = eventId => {
         axios
-            .put(`/api/events/save/${eventId}`)
+            .put(`/api/events/unsave/${eventId}`)
             .then(response => {
-                console.log(response);
-                // Add alert here
+                const eventData = this.addBgImages(response.data);
+                this.setState({ favorites: eventData });
             })
             .catch(error => console.log(error));
     };
 
+    addBgImages = (events) => {
+        const reformatted = events.map((event) => {
+            if (event.imgSrc === "N/A" || !event.imgSrc) {
+                event.imgSrc = bgThr;
+            }
+            return event;
+        });
+        return reformatted;
+    };
+
     async componentDidMount() {
         await axios
-            .get('/api/events/all')
+            .get('/api/events/saved')
             .then(response => {
-                // console.log(response.data);
-                const eventData = response.data.map((event) => {
-                    if (event.imgSrc === "N/A" || !event.imgSrc) {
-                        event.imgSrc = bgThr;
-                    }
-                    return event;
-                });
-                // console.log(eventData);
+                const eventData = this.addBgImages(response.data);
                 this.setState({
                     loading: false,
                     username: this.props.username,
-                    events: eventData
+                    favorites: eventData
                 });
             })
             .catch(error => {
@@ -62,7 +55,7 @@ class Events extends Component {
     }
 
     render() {
-        const { events, loading, loginError } = this.state;
+        const { favorites, loading, loginError } = this.state;
         if (loading) {
             return (
                 <Instructotron>
@@ -77,11 +70,11 @@ class Events extends Component {
                 <div>
                     <div className="events-wrapper">
                         <div className="events-section">
-                            <h1>Upcoming Events:</h1>
-                            {events.length ? (
+                            <h1>Saved Events:</h1>
+                            {favorites.length ? (
                                 <section className="event-area">
                                     <h5>Events In Northern California:</h5>
-                                    {events.map(event => (
+                                    {favorites.map(event => (
                                         <EventCard key={event._id}
                                             eventId={event._id}
                                             link={event.link}
@@ -91,14 +84,14 @@ class Events extends Component {
                                             fullTitle={event.fullTitle}
                                             organizers={event.organizers}
                                             bgImg={event.imgSrc}
-                                            favorite={false}
+                                            favorite={true}
                                             alt={`No Image Available`}
-                                            handleSaveEvent={this.handleSaveEvent}
+                                            handleUnsaveEvent={this.handleUnsaveEvent}
                                         />
                                     ))}
                                 </section>
                             ) : (
-                                    <h3>No Results to Display. Click on the Scrape Button to Populate the Database.</h3>
+                                    <h3>No Results to Display. Visit the Events page to view upcoming events.</h3>
                                 )}
                         </div>
                     </div>
@@ -108,4 +101,4 @@ class Events extends Component {
     }
 }
 
-export default Events;
+export default Favorites;

@@ -45,6 +45,11 @@ class Navbar extends Component {
             Events
           </NavbarItem>
           <NavbarItem
+            onClick={() => this.props.handlePageChange("Favorites")}
+          >
+            Favorites
+          </NavbarItem>
+          <NavbarItem
             onClick={() => this.props.handleLogout()}
           >
             Logout

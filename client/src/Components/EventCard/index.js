@@ -9,8 +9,8 @@ export function EventCard(props) {
             <div className="single-event">
                 {props.favorite ? (
                     <button className="unsave-btn" onClick={() => props.handleUnsaveEvent(props.eventId)}>
-                        <div className="unsave-heart"></div>
-                        <span className="tooltiptext">Unsave Event</span>
+                        <div className="unsave-ex"></div>
+                        <span className="tooltiptext">Remove Event</span>
                     </button>
                 ) : (
                         <button className="save-btn" onClick={() => props.handleSaveEvent(props.eventId)}>

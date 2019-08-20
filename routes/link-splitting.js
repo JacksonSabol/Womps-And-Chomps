@@ -6,7 +6,7 @@ function splitUrl(url) { return url.split('.')[1] };
 async function getFacebookImage(url, callback) {
     try {
         await JSDOM.fromURL(`${url}`).then(dom => {
-            const source = dom.window.document.querySelector(".scaledImageFitWidth").src;
+            const source = dom.window.document.querySelector(".scaledImageFitWidth").src || dom.window.document.querySelector(".scaledImageFitHeight").src;
             callback(source);
         });
     } catch (e) {

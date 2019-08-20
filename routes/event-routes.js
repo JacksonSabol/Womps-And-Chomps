@@ -15,7 +15,7 @@ const moment = require('moment')
 function loggedIn(req, res, next) {
     // This checks to see if Passport successfully loaded the user from the session id and wrote it to the request
     if (req.user) {
-        console.log(req.user);
+        // console.log(req.user);
         // If so, move on to the next step
         next();
     }
@@ -56,7 +56,8 @@ module.exports = function (app) {
         db.User.findOne({ _id: req.user.id })
             // Populate all of the events associated with the User
             .populate("events")
-            .then(dbUserEvents => res.json(dbUserEvents))
+            // .then(dbUserEvents => console.log(dbUserEvents.events))
+            .then(dbUserEvents => res.json(dbUserEvents.events))
             // .catch(err => res.status(422).json(err));
             .catch(err => console.log(err));
     });
@@ -65,33 +66,46 @@ module.exports = function (app) {
         // Find the event in the database and return it if it exists
         db.Event.findOne({ _id: req.params.id })
             .then(dbEvent => {
-                // Add the event _id to the array of events in the User collection
-                // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
-                return db.User.findOneAndUpdate({ _id: req.user.id }, { $push: { events: dbEvent._id } }, { new: true });
+                // Find the user in the database and return them if they exist
+                db.User.findOne({ _id: req.user.id })
+                    .then(dbUser => {
+                        // Check if the user has saved the event before
+                        console.log(dbUser.events);
+                        const userEvents = dbUser.events;
+                        const eventId = String(req.params.id);
+                        if (userEvents.indexOf(eventId) > -1) {
+                            res.status(409).send("Duplicate Entry");
+                            return;
+                        } else {
+                            // Add the event _id to the array of events in the User collection
+                            // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
+                            return db.User.findOneAndUpdate({ _id: req.user.id }, { $push: { events: dbEvent._id } }, { new: true });
+                        }
+                    })
             })
             .then(function (dbUser) {
-                res.json(dbUser);
+                res.status(200).send("Favorite Added");
             })
+            // .catch(err => res.status(422).json(err));
             .catch(err => console.log(err));
     });
     // PUT route for "unsaving" an event
-    app.put("/api/events/edit/:id", loggedIn, function (req, res) {
+    app.put("/api/events/unsave/:id", loggedIn, function (req, res) {
         // Grab the document in the User collection where the _id is equal to the id of the logged in user
         db.User.findOne({ _id: req.user.id })
             // Populate all of the events associated with the User
             .populate("events")
             .then(dbUserEvents => {
-                console.log("dbUserEvents from unsaving an event: ", dbUserEvents);
                 // Once the user and their events are returned from the query, filter the events refs to no longer include the "unsaved" one
-                // const newUserEvents = dbUserEvents["events"].filter(event => event._id !== req.params.id);
+                const updatedEvents = dbUserEvents.events.filter(event => String(event._id) !== String(req.params.id));
                 // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
-                // return db.User.findOneAndUpdate({ _id: req.user.id }, { $set: { events: newUserEvents } }, { new: true });
+                return db.User.findOneAndUpdate({ _id: req.user.id }, { $set: { events: updatedEvents } }, { new: true }).populate("events");
             })
             // Since the mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-            // .then(function (updatedUserEvents) {
-            // If we were able to successfully update a User's events, send them back to the client
-            // res.json(updatedUserEvents);
-            // })
+            .then(function (updatedUserEvents) {
+                // If we were able to successfully update a User's events, send them back to the client
+                res.json(updatedUserEvents.events);
+            })
             // .catch(err => res.status(422).json(err));
             .catch(err => console.log(err));
     });
