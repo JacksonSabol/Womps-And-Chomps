@@ -6,6 +6,7 @@ const axios = require("axios");
 const request = require("request-promise");
 // Import helper functions for link splitting and retrieving images
 const getFacebookImage = require("./link-splitting").getFacebookImage;
+const getEventbriteImage = require("./link-splitting").getEventbriteImage;
 const splitUrl = require("./link-splitting").splitUrl;
 // Require all models
 const db = require("../models");
@@ -25,15 +26,15 @@ function loggedIn(req, res, next) {
         res.status(404).send('User not found');
     }
 }
-// function adminLoggedIn(req, res, next) {
-//     if (req.user && req.user.role === "admin") {
-//         next();
-//     }
-//     else {
-//         console.log("Login was not conserved");
-//         res.status(404).send('User not found');
-//     }
-// }
+function adminLoggedIn(req, res, next) {
+    if (req.user && req.user.username === "JacksonSabol") {
+        next();
+    }
+    else {
+        console.log("Login was not conserved");
+        res.status(404).send('User not found');
+    }
+}
 
 module.exports = function (app) {
     // Set the start of the day for querying
@@ -47,7 +48,16 @@ module.exports = function (app) {
         })
             // Sort by date
             .sort('field sortDate')
-            .then(dbEvents => res.json(dbEvents))
+            .then(dbEvents => {
+                db.User.findOne({ _id: req.user.id })
+                    .then(dbUserEvents => {
+                        const data = {
+                            events: dbEvents,
+                            saved: dbUserEvents.events
+                        };
+                        res.status(200).json(data);
+                    })
+            })
             .catch(err => res.status(422).json(err));
     });
     // GET route for getting all of the logged-in user's saved events
@@ -70,7 +80,6 @@ module.exports = function (app) {
                 db.User.findOne({ _id: req.user.id })
                     .then(dbUser => {
                         // Check if the user has saved the event before
-                        console.log(dbUser.events);
                         const userEvents = dbUser.events;
                         const eventId = String(req.params.id);
                         if (userEvents.indexOf(eventId) > -1) {
@@ -82,9 +91,9 @@ module.exports = function (app) {
                             return db.User.findOneAndUpdate({ _id: req.user.id }, { $push: { events: dbEvent._id } }, { new: true });
                         }
                     })
-            })
-            .then(function (dbUser) {
-                res.status(200).send("Favorite Added");
+                    .then(function (dbUserNew) {
+                        res.status(200).send(dbEvent._id);
+                    })
             })
             // .catch(err => res.status(422).json(err));
             .catch(err => console.log(err));
@@ -112,7 +121,7 @@ module.exports = function (app) {
     // new GET route for scraping data from 19hz and adding FB photos
     // app.get("/api/events/scrape", adminLoggedIn, function (req, res, next) {
     // Parse out venue from fullTitle and add to new field - split on '@'
-    app.get("/api/events/scrape", loggedIn, function (req, res, next) {
+    app.get("/api/events/scrape", adminLoggedIn, function (req, res, next) {
         (async function () {
             try {
                 const url = "https://19hz.info/eventlisting_BayArea.php";
@@ -141,6 +150,9 @@ module.exports = function (app) {
                             await getFacebookImage(url, function (source) {
                                 event.imgSrc = source;
                             });
+                        } else if (urlMod === "eventbrite") {
+                            const source = await getEventbriteImage(url);
+                            event.imgSrc = source;
                         } else {
                             event.imgSrc = "N/A"
                         }

@@ -1,3 +1,5 @@
+const request = require("request-promise");
+const cheerio = require("cheerio");
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
@@ -13,7 +15,19 @@ async function getFacebookImage(url, callback) {
         console.log(e);
     }
 }
+
+async function getEventbriteImage(url) {
+    try {
+        const baseHtml = await request(url);
+        const $ = cheerio.load(baseHtml);
+        const imgSrc = $(".listing-hero").children('picture').attr("content");
+        return imgSrc;
+    } catch (e) {
+        console.log(e);
+    }
+}
 module.exports = {
     splitUrl,
-    getFacebookImage
+    getFacebookImage,
+    getEventbriteImage
 };

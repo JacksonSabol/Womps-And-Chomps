@@ -33,7 +33,7 @@ class Navbar extends Component {
           {/* <HomeBtn onClick={() => this.props.handlePageChange("Home")}>
             Logo
           </HomeBtn> */}
-          <a href="/" className="home-logo">{`W&P`}</a>
+          <a href="/" className="home-logo">{`W&C`}</a>
           <NavbarItem
             onClick={() => this.props.handlePageChange("Home")}
           >

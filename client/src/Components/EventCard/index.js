@@ -13,8 +13,8 @@ export function EventCard(props) {
                         <span className="tooltiptext">Remove Event</span>
                     </button>
                 ) : (
-                        <button className="save-btn" onClick={() => props.handleSaveEvent(props.eventId)}>
-                            <div className="save-heart"></div>
+                        <button className="save-btn" onClick={() => props.handleSaveEvent(props.eventId)} disabled={props.saved}>
+                            <div className={`save-heart${props.saved}`}></div>
                             <span className="tooltiptext">Save Event</span>
                         </button>
                     )}

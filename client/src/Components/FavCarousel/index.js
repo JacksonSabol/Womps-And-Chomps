@@ -20,7 +20,6 @@ class Events extends Component {
     state = {
         username: '',
         events: [],
-        saved: [],
         loading: true,
         loginError: false
     };
@@ -29,18 +28,8 @@ class Events extends Component {
         axios
             .put(`/api/events/save/${eventId}`)
             .then(response => {
-                // Add alert here as well
-
-                const eventData = this.state.events.map((event) => {
-                    if (event._id === response.data) {
-                        event.saved = true;
-                    }
-                    return event;
-                });
-                this.setState({
-                    events: eventData,
-                    saved: [...this.state.saved, response.data]
-                });
+                console.log(response);
+                // Add alert here
             })
             .catch(error => console.log(error));
     };
@@ -50,14 +39,9 @@ class Events extends Component {
             .get('/api/events/all')
             .then(response => {
                 // console.log(response.data);
-                const eventData = response.data.events.map((event) => {
+                const eventData = response.data.map((event) => {
                     if (event.imgSrc === "N/A" || !event.imgSrc) {
                         event.imgSrc = bgThr;
-                    }
-                    if (response.data.saved.indexOf(event._id) > -1) {
-                        event.saved = true;
-                    } else {
-                        event.saved = false;
                     }
                     return event;
                 });
@@ -65,8 +49,7 @@ class Events extends Component {
                 this.setState({
                     loading: false,
                     username: this.props.username,
-                    events: eventData,
-                    saved: response.data.saved
+                    events: eventData
                 });
             })
             .catch(error => {
@@ -109,7 +92,6 @@ class Events extends Component {
                                             organizers={event.organizers}
                                             bgImg={event.imgSrc}
                                             favorite={false}
-                                            saved={event.saved ? " saved" : ""}
                                             alt={`No Image Available`}
                                             handleSaveEvent={this.handleSaveEvent}
                                         />

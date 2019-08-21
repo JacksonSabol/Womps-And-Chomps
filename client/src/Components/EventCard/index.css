@@ -64,6 +64,10 @@
 .save-btn:hover .save-heart {
     filter: url('../../media/heart.svg#change-fill-on-hover');
 }
+.save-heart.saved {
+    background: url('../../media/heart-hover.svg') no-repeat center center;
+    background-size: cover;
+}
 .unsave-ex {
     width: 100%;
     height: 100%;
@@ -108,8 +112,6 @@
 
 .single-event:hover {
     transform: scale(1, 1);
-    /* box-shadow: 10px 0 0 0 #222222 inset; */
-    /* box-shadow: rgba(0,0,0, 0.1)0 10px 30px; */
 }
 .single-event:hover::after {
     position: absolute;
@@ -150,7 +152,6 @@
 }
 .single-event .event-details h5 a {
     color: #ffffff;
-    /* margin-top: 99%; */
     font-size: 18px;
     font-weight: bold;
     line-height: 27px;
