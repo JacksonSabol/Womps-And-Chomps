@@ -64,6 +64,9 @@
 .save-btn:hover .save-heart {
     filter: url('../../media/heart.svg#change-fill-on-hover');
 }
+.save-btn:hover .save-heart.saved {
+    filter: none;
+}
 .save-heart.saved {
     background: url('../../media/heart-hover.svg') no-repeat center center;
     background-size: cover;
@@ -97,6 +100,10 @@
 .unsave-btn:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
+}
+.save-btn:hover .save-heart.saved + .tooltiptext {
+    visibility: hidden;
+    opacity: 0;
 }
 
 .tooltiptext::after {
