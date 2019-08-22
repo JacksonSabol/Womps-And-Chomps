@@ -7,7 +7,8 @@ import '../../App.css';
 class AdminHome extends Component {
     state = {
         username: this.props.username,
-        scrapeComplete: false
+        scrapeComplete: false,
+        reformatComplete: false
     };
 
     handleScrape = () => {
@@ -21,8 +22,20 @@ class AdminHome extends Component {
             });
     };
 
+    handleReformat = () => {
+        axios
+            .get('/api/events/reformat')
+            .then(response => {
+                console.log(response);
+                this.setState({ reformatComplete: true });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+
     render() {
-        const { scrapeComplete } = this.state;
+        const { scrapeComplete, reformatComplete } = this.state;
         return (
             <div>
                 <div className="App">
@@ -35,6 +48,15 @@ class AdminHome extends Component {
                         {scrapeComplete && (
                             <div className="auth-alert">
                                 <p className="form-alert">Scrape complete! Visit the Events page to see the most recent events added.</p>
+                            </div>
+                        )}
+                        <AuthBtn
+                            onClick={() => this.handleReformat()}>
+                            Reformat
+                        </AuthBtn>
+                        {reformatComplete && (
+                            <div className="auth-alert">
+                                <p className="form-alert">Reformat complete</p>
                             </div>
                         )}
                     </header>
