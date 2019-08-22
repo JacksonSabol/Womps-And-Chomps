@@ -188,8 +188,8 @@ module.exports = function (app) {
                             }
                         }));
                         const eventDataFiltered = eventData.filter(event => event.imgSrc !== "Removed");
-                        const dbResTrack = 0;
-                        const dbErrTrack = 0;
+                        let dbResTrack = 0;
+                        let dbErrTrack = 0;
                         for (event of eventDataFiltered) {
                             db.Event.findByIdAndUpdate(event._id, { $set: { imgSrc: event.imgSrc } }, { new: true })
                                 .then(function (dbResponse) {
