@@ -119,7 +119,6 @@ module.exports = function (app) {
             .catch(err => console.log(err));
     });
     // new GET route for scraping data from 19hz and adding FB photos
-    // app.get("/api/events/scrape", adminLoggedIn, function (req, res, next) {
     // Parse out venue from fullTitle and add to new field - split on '@'
     app.get("/api/events/scrape", adminLoggedIn, function (req, res, next) {
         (async function () {
@@ -142,36 +141,17 @@ module.exports = function (app) {
                     formattedData.sortDate = $(row).children('td').eq(6).children("div").text();
                     return formattedData;
                 }).get();
-                await Promise.all(eventData.map(async (event) => {
-                    try {
-                        const url = event.link ? event.link : "w.N/A.w";
-                        const urlMod = await splitUrl(url);
-                        if (urlMod === "facebook") {
-                            await getFacebookImage(url, function (source) {
-                                event.imgSrc = source;
-                            });
-                        } else if (urlMod === "eventbrite") {
-                            const source = await getEventbriteImage(url);
-                            event.imgSrc = source;
-                        } else {
-                            event.imgSrc = "N/A"
-                        }
-                        return event;
-                    } catch (e) {
-                        console.log(e);
-                    }
-                }));
                 // console.log(eventData);
                 db.Event.insertMany(eventData, { ordered: false })
                     .then(function (dbResponse) {
                         // View the added results in the console
-                        // console.log(dbResponse);
+                        console.log("Response from Database: ", dbResponse);
                         res.status(200).send(`Scrape complete. ${dbResponse.length} events inserted.`);
                     })
                     .catch(function (err) {
                         // If an error occurred, log it
                         console.log(err);
-                        console.log("write errors", err.writeErrors.length);
+                        console.log("write errors: ", err.writeErrors.length);
                         res.status(400).send(`Scrape complete. ${err.writeErrors.length} duplicate entries.`);
                         // Move to the next entry if an error occurs (duplicates)
                         // next();
@@ -182,48 +162,57 @@ module.exports = function (app) {
             }
         })();
     });
-
-    // old GET route for scraping data from 19hz
-    // app.get("/api/events/scrape", function (req, res, next) {
-    //     // Make an HTTP request via axios for 19hz's "San Francisco Bay Area / Northern California" list
-    //     axios.get("https://19hz.info/eventlisting_BayArea.php").then(function (res) {
-    //         // Load the HTML into cheerio and save it to a variable
-    //         // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
-    //         const $ = cheerio.load(res.data);
-    //         // Isolate the desired values (i: iterator. element: the current element)
-    //         $("table").each(function (i, element) {
-    //             if (i === 0) {
-    //                 $(element).find("tr").each(function (i, element) {
-    //                     // Define an empty object to save the data that we'll scrape
-    //                     var result = {};
-    //                     result.dateAndTime = $(element).children('td').eq(0).text();
-    //                     result.title = $(element).children('td').eq(1).children("a").text();
-    //                     result.fullTitle = $(element).children('td').eq(1).text();
-    //                     result.link = $(element).children('td').eq(1).children("a").attr("href");
-    //                     result.tags = $(element).children('td').eq(2).text();
-    //                     result.priceAndAges = $(element).children('td').eq(3).text();
-    //                     result.organizers = $(element).children('td').eq(4).text();
-    //                     result.externalLinkTitle = $(element).children('td').eq(5).text();
-    //                     result.externalLink = $(element).children('td').eq(5).children("a").attr("href");
-    //                     result.sortDate = $(element).children('td').eq(6).children("div").text();
-
-    //                     // Insert a new Event into the Event collection using the `result` object built from scraping
-    //                     db.Event.create(result)
-    //                         .then(function (dbEvent) {
-    //                             // View the added result in the console
-    //                             console.log(dbEvent);
-    //                         })
-    //                         .catch(function (err) {
-    //                             // If an error occurred, log it
-    //                             console.log(err);
-    //                             // Move to the next entry if an error occurs (duplicates)
-    //                             next();
-    //                         });
-    //                 });
-    //             }
-    //         });
-
-    //     });
-    //     res.status(200).send('Scrape complete');
-    // });
+    // Route to reformat existing documents in database
+    app.get("/api/events/reformat", adminLoggedIn, function (req, res, next) {
+        db.Event.find({})
+            .then(dbEvents => {
+                (async function () {
+                    try {
+                        const eventData = await Promise.all(dbEvents.map(async (event) => {
+                            try {
+                                const url = event.link ? event.link : "w.N/A.w";
+                                const urlMod = await splitUrl(url);
+                                if (urlMod === "facebook") {
+                                    await getFacebookImage(url, function (source) {
+                                        event.imgSrc = source;
+                                    });
+                                } else if (urlMod === "eventbrite") {
+                                    const source = await getEventbriteImage(url);
+                                    event.imgSrc = source;
+                                } else {
+                                    event.imgSrc = "N/A"
+                                }
+                                return event;
+                            } catch (e) {
+                                console.log(e);
+                            }
+                        }));
+                        const eventDataFiltered = eventData.filter(event => event.imgSrc !== "Removed");
+                        const dbResTrack = 0;
+                        const dbErrTrack = 0;
+                        for (event of eventDataFiltered) {
+                            db.Event.findByIdAndUpdate(event._id, { $set: { imgSrc: event.imgSrc } }, { new: true })
+                                .then(function (dbResponse) {
+                                    // View the added results in the console
+                                    console.log("Database Response: ", dbResponse);
+                                    dbResTrack++;
+                                })
+                                .catch(function (err) {
+                                    // If an error occurred, log it
+                                    console.log("Error: ", err);
+                                    dbErrTrack++;
+                                });
+                        };
+                        if (dbErrTrack.length > 0) {
+                            res.status(500).send(`Reformat complete.\nEncountered Errors: ${dbErrTrack}\n${dbResTrack} events updated.`);
+                        } else {
+                            res.status(200).send(`Reformat complete. ${dbResTrack} events updated.`);
+                        }
+                    } catch (e) {
+                        console.log(e.message);
+                    }
+                })();
+            })
+            .catch(err => res.status(422).json(err));
+    });
 };
