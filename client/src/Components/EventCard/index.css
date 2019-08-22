@@ -56,11 +56,36 @@
 	transition: opacity 1s;
 }
 .save-heart {
+    position: relative;
+    overflow: hidden;
     width: 100%;
     height: 100%;
     background: url("../../media/heart.svg") no-repeat center center;
     background-size: cover;
 }
+.save-heart::before,
+.save-heart::after {
+    position: absolute;
+    content: '';
+    box-shadow: inset 1px 1px 1px 0 #61dafb90;
+    background: url('../../media/heart.svg') no-repeat center center;
+    background-size: cover;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.save-heart::before {
+    left: 1px;
+    filter: url('../../media/heart.svg#change-fill-site-blue');
+    animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+.save-heart::after {
+    left: -1px;
+    filter: url('../../media/heart.svg#change-fill-site-blue');
+    animation: glitch-anim-2 2s infinite linear alternate-reverse;
+}
+  
 .save-btn:hover .save-heart {
     filter: url('../../media/heart.svg#change-fill-on-hover');
 }
@@ -192,5 +217,48 @@
 @media (max-width: 400px) {
     .single-event {
         margin: 0;
+    }
+}
+
+/* Glitch Animations */
+@keyframes glitch-anim-1 {
+    0% {
+      clip-path: inset(40% 0 61% 0);
+    }
+    20% {
+      clip-path: inset(92% 0 1% 0);
+    }
+    40% {
+      clip-path: inset(43% 0 1% 0);
+    }
+    60% {
+      clip-path: inset(25% 0 58% 0);
+    }
+    80% {
+      clip-path: inset(54% 0 7% 0);
+    }
+    100% {
+      clip-path: inset(58% 0 43% 0);
+    }
+}
+
+@keyframes glitch-anim-2 {
+    0% {
+      clip-path: inset(22% 0 33% 0);
+    }
+    20% {
+      clip-path: inset(12% 0 76% 0);
+    }
+    40% {
+      clip-path: inset(1% 0 55% 0);
+    }
+    60% {
+      clip-path: inset(75% 0 38% 0);
+    }
+    80% {
+      clip-path: inset(46% 0 21% 0);
+    }
+    100% {
+      clip-path: inset(42% 0 58% 0);
     }
 }
