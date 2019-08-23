@@ -1,3 +1,5 @@
+// Adapted from Patryk Andrzejewski - https://github.com/andrzejewsky/netflix-slider
+
 import React, { Component } from 'react';
 import axios from 'axios';
 import './index.css';
