@@ -45,8 +45,33 @@ async function getEventbriteImage(url) {
         if (e.response.req.path === "/notavailable") {
             return "Removed";
         } else {
-            return "Slow Down";
+            return "Rate Limiter: Slow Down";
         }
+    }
+}
+
+async function getResAdvisorImage(url) {
+    try {
+        const baseHtml = await request(url);
+        const $ = cheerio.load(baseHtml);
+        let imgSrc = $(".flyer").children('a').attr('href');
+        if (!imgSrc) {
+            imgSrc = "/check";
+        }
+        return ("https://www.residentadvisor.net" + imgSrc);
+    } catch (e) {
+        console.log(e);
+        if (e.statusCode === 429) {
+            return {
+                error: "Rate Limiter",
+                message: `Retry after ${e.response.headers['retry-after']}ms`
+            };
+        } else {
+            return {
+                error: "Unknown"
+            };
+        }
+
     }
 }
 
@@ -54,5 +79,6 @@ module.exports = {
     splitUrl,
     prependMobileUrl,
     getFacebookImage,
-    getEventbriteImage
+    getEventbriteImage,
+    getResAdvisorImage
 };
