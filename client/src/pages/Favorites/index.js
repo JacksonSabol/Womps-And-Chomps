@@ -26,7 +26,7 @@ class Favorites extends Component {
 
     addBgImages = (events) => {
         const reformatted = events.map((event) => {
-            if (event.imgSrc === "N/A" || event.imgSrc === "video") {
+            if (event.imgSrc === "N/A" || event.imgSrc === "video"  || event.imgSrc === "Rate Limiter: Slow Down" || !event.imgSrc) {
                 event.imgSrc = bgThr;
             }
             return event;

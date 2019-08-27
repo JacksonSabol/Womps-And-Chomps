@@ -51,7 +51,7 @@ class Events extends Component {
             .then(response => {
                 // console.log(response.data);
                 const eventData = response.data.events.map((event) => {
-                    if (event.imgSrc === "N/A" || event.imgSrc === "video") {
+                    if (event.imgSrc === "N/A" || event.imgSrc === "video" || event.imgSrc === "Rate Limiter: Slow Down" || !event.imgSrc) {
                         event.imgSrc = bgThr;
                     }
                     if (response.data.saved.indexOf(event._id) > -1) {

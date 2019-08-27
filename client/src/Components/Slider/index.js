@@ -5,17 +5,7 @@ import axios from 'axios';
 import './index.css';
 import { Instructotron } from '../../Components/Instructotron';
 import { EventCard } from '../../Components/EventCard';
-// import bgOne from '../../media/slider/1.jpg';
-// import bgTwo from '../../media/slider/2.jpg';
 import bgThr from '../../media/slider/3.jpg';
-// import bgFou from '../../media/slider/4.jpg';
-// import bgFiv from '../../media/slider/5.jpg';
-// import bgSix from '../../media/slider/6.jpg';
-// import bgSev from '../../media/slider/7.jpg';
-// import bgEig from '../../media/slider/8.jpg';
-// import bgNin from '../../media/slider/9.jpg';
-// import bgTen from '../../media/slider/10.jpg';
-// import eventBG from '../../media/eventBG.jpg';
 
 class Events extends Component {
     // Set the initial state values
