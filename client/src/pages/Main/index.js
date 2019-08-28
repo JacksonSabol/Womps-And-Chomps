@@ -6,6 +6,7 @@ import Navbar from '../../Components/Navbar';
 import UserHome from '../UserHome';
 import Events from '../Events';
 import Favorites from '../Favorites';
+import HomeAlpha from '../HomeAlpha';
 
 class Main extends Component {
   state = {
@@ -48,8 +49,15 @@ class Main extends Component {
       case "Home": return <UserHome
         username={this.state.username}
       />;
-      case "Events": return <Events />;
-      case "Favorites": return <Favorites />;
+      case "Events": return <Events
+        username={this.state.username}
+      />;
+      case "Favorites": return <Favorites
+        username={this.state.username}
+      />;
+      case "HomeAlpha": return <HomeAlpha
+        username={this.state.username}
+      />;
       default: return <UserHome
         username={this.state.username}
       />;

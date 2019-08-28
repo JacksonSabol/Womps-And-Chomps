@@ -1,0 +1,26 @@
+.list-overflow-container {
+    
+    background: rgba(40, 40, 40, 0.7);
+    font-size: 1rem;
+  }
+
+.home-alpha-wrapper {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 100px;
+}
+
+.home-alpha-section h5 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.home-alpha-area {
+    position: relative;
+    display: block;
+    max-height: 500px;
+    border-radius: 4px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 1px solid #61dafb;
+}
