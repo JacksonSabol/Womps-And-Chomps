@@ -1,0 +1,54 @@
+.slide-button {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 55px;
+    border: 0;
+    outline: 0;
+    padding: 0;
+    margin: 40px 0;
+    z-index: 4;
+    cursor: pointer;
+}
+.slide-button span {
+    width: 25px;
+    color: #fff;
+    display: block;
+    margin: 0 auto;
+}
+.slide-button--next {
+    right: 0;
+    background: linear-gradient(to right,transparent,#000000);
+}
+.slide-button--next span {
+    transform: rotateZ(-90deg);
+}
+.slide-button--prev {
+    left: 0;
+    background: linear-gradient(to left,transparent,#000000);
+}
+.slide-button--prev span {
+    transform: rotateZ(90deg);
+}
+.slide-button--next-open {
+    right: 0;
+    background: none;
+}
+.slide-button--next-open span {
+    transform: rotateZ(-90deg);
+    /* background: #00000090; */
+    /* border-radius: 75%; */
+    /* height: 26px; */
+    /* width: 26px; */
+    /* margin: 0 auto; */
+    /* line-height: 26px; */
+    /* display: inline-block; */
+    /* text-align: center; */
+}
+.slide-button--prev-open {
+    left: 0;
+    background: none;
+}
+.slide-button--prev-open span {
+    transform: rotateZ(90deg);
+}

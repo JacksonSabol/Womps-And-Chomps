@@ -1,16 +1,26 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import moment from 'moment';
 import './index.css';
 import { Instructotron } from '../../Components/Instructotron';
+import Slider from '../../Components/Slider';
 import { EventCard } from '../../Components/EventCard';
 import bgThr from '../../media/slider/3.jpg';
+
+const today = moment().endOf('day');
+const tomorrow = moment(today).add(1, 'day');
+const week = moment().endOf('week').add(1, 'day');
 
 class HomeAlpha extends Component {
     // Set the initial state values
     state = {
         username: '',
         events: [],
+        favorites: [],
         featured: [],
+        todays: [],
+        tomorrows: [],
+        thisWeeks: [],
         saved: [],
         loading: true,
         loginError: false
@@ -28,8 +38,12 @@ class HomeAlpha extends Component {
                     }
                     return event;
                 });
+                const favoritedEvent = this.state.events.filter(event => event._id === response.data);
+                console.log("Event Data: ", eventData);
+                console.log("Favorited event: ", favoritedEvent);
                 this.setState({
                     events: eventData,
+                    favorites: [favoritedEvent, ...this.state.favorites],
                     saved: [...this.state.saved, response.data]
                 });
             })
@@ -52,11 +66,33 @@ class HomeAlpha extends Component {
                     }
                     return event;
                 });
-                // console.log(eventData);
+                const favoriteEvents = eventData.filter(event => event.saved === true);
+                // console.log(favoriteEvents);
+                const todaysEvents = eventData.filter(event => {
+                    const normDate = moment(event.sortDate);
+                    return today.diff(normDate, 'minutes') > 0;
+                });
+                // console.log(todaysEvents);
+                const tomorrowsEvents = eventData.filter(event => {
+                    const normDate = moment(event.sortDate);
+                    const diff = tomorrow.diff(normDate, 'minutes'); 
+                    return diff > 0 && diff < 1440;
+                });
+                // console.log(tomorrowsEvents);
+                const thisWeeksEvents = eventData.filter(event => {
+                    const normDate = moment(event.sortDate);
+                    const diff = week.diff(normDate, 'minutes'); 
+                    return diff > 0;
+                });
+                // console.log(thisWeeksEvents);
                 this.setState({
                     loading: false,
                     username: this.props.username,
                     events: eventData,
+                    favorites: favoriteEvents,
+                    todays: todaysEvents,
+                    tomorrows: tomorrowsEvents,
+                    thisWeeks: thisWeeksEvents,
                     saved: response.data.saved
                 });
             })
@@ -70,7 +106,7 @@ class HomeAlpha extends Component {
     }
 
     render() {
-        const { events, loading, loginError } = this.state;
+        const { events, favorites, todays, tomorrows, thisWeeks, loading, loginError } = this.state;
         if (loading) {
             return (
                 <Instructotron>
@@ -86,9 +122,29 @@ class HomeAlpha extends Component {
                     <div className="home-alpha-wrapper">
                         <div className="home-alpha-section">
                             <h1>Home (Alpha):</h1>
+                            <Slider
+                                events={favorites}
+                                sliderTitle={"Favorites: "}
+                                keySuffix={"fav"}
+                            />
+                            <Slider
+                                events={todays}
+                                sliderTitle={"Today's Events: "}
+                                keySuffix={"tod"}
+                            />
+                            <Slider
+                                events={tomorrows}
+                                sliderTitle={"Tomorrow's Events: "}
+                                keySuffix={"tom"}
+                            />
+                            <Slider
+                                events={thisWeeks}
+                                sliderTitle={"This Week's Events: "}
+                                keySuffix={"wee"}
+                            />
                             {events.length ? (
                                 <section className="home-alpha-area">
-                                    <h5>Upcoming Events:</h5>
+                                    <h5>Browse All Upcoming Events:</h5>
                                     {events.map(event => (
                                         <EventCard key={event._id}
                                             eventId={event._id}
