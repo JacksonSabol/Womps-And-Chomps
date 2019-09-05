@@ -15,10 +15,11 @@ const Content = ({ event, onClose, animate }) => (
       <div className="content__area__container">
         <div className="content__title">{event.title}</div>
         <div className="content__description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
-          et euismod ligula. Morbi mattis pretium eros, ut mollis leo tempus
-          eget. Sed in dui ac ipsum feugiat ultricies. Phasellus vestibulum enim
-          quis quam congue, non fringilla orci placerat. Praesent sollicitudin
+          <p>When: {event.dateAndTime}</p>
+          <p>Where:{event.fullTitle.split('@')[1]}</p>
+          <p>Price | Ages: {event.priceAndAges}</p>
+          <p>Organizers: {event.organizers || "N/A"}</p>
+          <p>Link: <a href={`${event.link}`} rel="noopener noreferrer" target="_blank">{event.link}</a></p>
         </div>
       </div>
       <button className="content__close" onClick={onClose}>
