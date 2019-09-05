@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import Background from '../../Components/Background';
 import { Instructotron } from "../../Components/Instructotron";
 import { AuthBtn } from "../../Components/Button";
 import { AuthInput } from "../../Components/Form";
@@ -76,6 +77,7 @@ class UserSignup extends Component {
         if (unregistered) {
             return (
                 <div>
+                    <Background />
                     <Instructotron height={"450px"}>
                         <h1>Register</h1>
                         <a href="/" className="auth-link">Home </a>

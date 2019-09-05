@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Background from '../../Components/Background';
 import { Instructotron } from "../../Components/Instructotron";
 import './index.css';
 
@@ -11,6 +12,7 @@ class Splash extends Component {
     render() {
         return (
             <div>
+                <Background />
                 <Instructotron height={"300px"}>
                     <h1>Welcome to Womp and Chomp: electronic music event tracker.</h1>
                     <a href="/user/signin" className="auth-link">Login </a>
