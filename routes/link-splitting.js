@@ -75,10 +75,31 @@ async function getResAdvisorImage(url) {
     }
 }
 
+async function getTicketmasterImage(url) {
+    try {
+        const baseHtml = await request(url);
+        const $ = cheerio.load(baseHtml);
+        let imgSrc = $("#artist_image").attr("src") || $('.event-header__photo').attr('src');
+        console.log(imgSrc + "\nat\n" + url);
+        if (imgSrc.slice(0, 2) == "//") {
+            const sourceSlice = imgSrc.split('').slice(26, -27).join('');
+            imgSrc = 'https://www.ticketmaster.com/compressedimages/' + sourceSlice + '_RETINA_PORTRAIT_16_9.jpg?width=600&height=400&fit=crop&auto=webp';
+        }
+        return imgSrc;
+    } catch (e) {
+        if (e.statusCode === 416) {
+            return "unsatisfied range"
+        } else {
+            console.log(e);
+        }
+    }
+}
+
 module.exports = {
     splitUrl,
     prependMobileUrl,
     getFacebookImage,
     getEventbriteImage,
-    getResAdvisorImage
+    getResAdvisorImage,
+    getTicketmasterImage
 };

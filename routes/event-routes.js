@@ -7,6 +7,7 @@ const request = require("request-promise");
 // Import helper functions for link splitting and retrieving images
 const getFacebookImage = require("./link-splitting").getFacebookImage;
 const getEventbriteImage = require("./link-splitting").getEventbriteImage;
+const getTicketmasterImage = require("./link-splitting").getTicketmasterImage;
 const getResAdvisorImage = require("./link-splitting").getResAdvisorImage;
 const splitUrl = require("./link-splitting").splitUrl;
 // Require all models
@@ -180,7 +181,10 @@ module.exports = function (app) {
                                 } else if (urlMod === "eventbrite") {
                                     const source = await getEventbriteImage(url);
                                     event.imgSrc = source;
-                                } 
+                                } else if (urlMod === "ticketmaster") {
+                                    const source = await getTicketmasterImage(url);
+                                    event.imgSrc = source;
+                                }
                                 // Disabled for now because of RA's rate limiting
                                 // else if (urlMod === "residentadvisor") {
                                 //     setTimeout(async () => {
