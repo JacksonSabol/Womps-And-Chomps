@@ -54,11 +54,12 @@ async function getResAdvisorImage(url) {
     try {
         const baseHtml = await request(url);
         const $ = cheerio.load(baseHtml);
-        let imgSrc = $(".flyer").children('a').attr('href');
+        const imgSrc = $(".flyer").children('a').attr('href');
         if (!imgSrc) {
-            imgSrc = "/check";
+            return "N/A";
+        } else {
+            return ("https://www.residentadvisor.net" + imgSrc);
         }
-        return ("https://www.residentadvisor.net" + imgSrc);
     } catch (e) {
         console.log(e);
         if (e.statusCode === 429) {
@@ -80,7 +81,6 @@ async function getTicketmasterImage(url) {
         const baseHtml = await request(url);
         const $ = cheerio.load(baseHtml);
         let imgSrc = $("#artist_image").attr("src") || $('.event-header__photo').attr('src');
-        console.log(imgSrc + "\nat\n" + url);
         if (imgSrc.slice(0, 2) == "//") {
             const sourceSlice = imgSrc.split('').slice(26, -27).join('');
             imgSrc = 'https://www.ticketmaster.com/compressedimages/' + sourceSlice + '_RETINA_PORTRAIT_16_9.jpg?width=600&height=400&fit=crop&auto=webp';

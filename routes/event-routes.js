@@ -177,13 +177,16 @@ module.exports = function (app) {
                                 if (urlMod === "facebook") {
                                     await getFacebookImage(url, function (source) {
                                         event.imgSrc = source;
+                                        event.reformattedDate = today.toDate();
                                     });
                                 } else if (urlMod === "eventbrite") {
                                     const source = await getEventbriteImage(url);
                                     event.imgSrc = source;
+                                    event.reformattedDate = today.toDate();
                                 } else if (urlMod === "ticketmaster") {
                                     const source = await getTicketmasterImage(url);
                                     event.imgSrc = source;
+                                    event.reformattedDate = today.toDate();
                                 }
                                 // Disabled for now because of RA's rate limiting
                                 // else if (urlMod === "residentadvisor") {
@@ -195,6 +198,7 @@ module.exports = function (app) {
                                 // } 
                                 else {
                                     event.imgSrc = "N/A"
+                                    event.reformattedDate = null;
                                 }
                                 return event;
                             } catch (e) {
@@ -202,31 +206,92 @@ module.exports = function (app) {
                             }
                         }));
                         const eventDataFiltered = eventData.filter(event => event.imgSrc !== "Removed");
-                        let dbResTrack = 0;
-                        let dbErrTrack = 0;
-                        for (event of eventDataFiltered) {
-                            db.Event.findByIdAndUpdate(event._id, { $set: { imgSrc: event.imgSrc } }, { new: true })
+                        for await (const event of eventDataFiltered) {
+                            db.Event.findByIdAndUpdate(event._id, { $set: { imgSrc: event.imgSrc, reformattedDate: event.reformattedDate } }, { new: true })
                                 .then(function (dbResponse) {
+                                    res.write("a");
                                     // View the added results in the console
                                     console.log("Database Response: ", dbResponse);
-                                    dbResTrack++;
                                 })
                                 .catch(function (err) {
+                                    res.write("e");
                                     // If an error occurred, log it
                                     console.log("Error: ", err);
-                                    dbErrTrack++;
                                 });
                         };
-                        if (dbErrTrack.length > 0) {
-                            res.status(500).send(`Reformat complete.\nEncountered Errors: ${dbErrTrack}\n${dbResTrack} events updated.`);
-                        } else {
-                            res.status(200).send(`Reformat complete. ${dbResTrack} events updated.`);
-                        }
+                        setTimeout(() => {
+                            res.status(200);
+                            res.end();
+                        }, 300);
                     } catch (e) {
                         console.log(e.message);
                     }
                 })();
             })
             .catch(err => res.status(422).json(err));
+    });
+    // Route to reformat existing documents in database for Resident Advisor
+    app.get("/api/events/reformat/ra", adminLoggedIn, function (req, res, next) {
+        db.Event.find({})
+            .then(dbEvents => {
+                (async () => {
+                    try {
+                        const filteredData = await dbEvents.filter(event => splitUrl(event.link) === "residentadvisor");
+                        // console.log("before", filteredData);
+                        let n = filteredData.length;
+                        console.log(`${n} events to be updated, taking ${n * 3} seconds to complete.`);
+                        async function* linkGen() {
+                            let i = 0;
+                            while (i < n) {
+                                yield new Promise((resolve, reject) => {
+                                    setTimeout(async () => {
+                                        const tempSource = await getResAdvisorImage(filteredData[i].link);
+                                        const source = tempSource.error ? tempSource.error : tempSource;
+                                        i++
+                                        resolve(source)
+                                    }, 3000);
+                                });
+                            }
+                        };
+                        let i = 0;
+                        for await (const result of linkGen()) {
+                            console.log(i);
+                            db.Event.findByIdAndUpdate(filteredData[i]._id, { $set: { imgSrc: result, reformattedDate: today.toDate() } }, { new: true })
+                                .then(function (dbResponse) {
+                                    res.write("a");
+                                    // View the added results in the console
+                                    console.log("Database Response: ", dbResponse);
+                                })
+                                .catch(function (err) {
+                                    res.write("e");
+                                    // If an error occurred, log it
+                                    console.log("Error: ", err);
+                                });
+                            i++
+                        }
+                        setTimeout(() => {
+                            res.status(200);
+                            res.end();
+                        }, 300);
+                    } catch (e) {
+                        console.log(e.message);
+                    }
+                })();
+            })
+            .catch(err => res.status(422).json(err));
+    });
+    // Route to test response writing
+    app.get("/api/events/test/res", adminLoggedIn, function (req, res, next) {
+        res.write("a");
+        res.write("a");
+        res.write("e");
+        res.write("a");
+        res.write("a");
+        res.write("e");
+        res.write("a");
+        res.write("e");
+        res.write("e");
+        res.status(200).end();
+        // res.end();
     });
 };

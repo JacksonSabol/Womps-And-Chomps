@@ -8,7 +8,15 @@ class AdminHome extends Component {
     state = {
         username: this.props.username,
         scrapeComplete: false,
-        reformatComplete: false
+        reformatComplete: false,
+        reformatEntries: [],
+        reformatErrors: [],
+        reformatRaComplete: false,
+        reformatRaEntries: [],
+        reformatRaErrors: [],
+        resWriting: false,
+        resWritingEntries: [],
+        resWritingErrors: []
     };
 
     handleScrape = () => {
@@ -27,7 +35,35 @@ class AdminHome extends Component {
             .get('/api/events/reformat')
             .then(response => {
                 console.log(response);
-                this.setState({ reformatComplete: true });
+                const numEntries = response.data.split('').filter(letter => letter === "a");
+                const numErrors = response.data.split('').filter(letter => letter === "e");
+                this.setState({ reformatComplete: true, reformatEntries: numEntries, reformatErrors: numErrors });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    handleReformatRa = () => {
+        axios
+            .get('/api/events/reformat/ra')
+            .then(response => {
+                console.log(response);
+                const numEntries = response.data.split('').filter(letter => letter === "a");
+                const numErrors = response.data.split('').filter(letter => letter === "e");
+                this.setState({ reformatRaComplete: true, reformatRaEntries: numEntries, reformatRaErrors: numErrors });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    handleResWriting = () => {
+        axios
+            .get('/api/events/test/res')
+            .then(response => {
+                console.log(response);
+                const numEntries = response.data.split('').filter(letter => letter === "a");
+                const numErrors = response.data.split('').filter(letter => letter === "e");
+                this.setState({ resWriting: true, resWritingEntries: numEntries, resWritingErrors: numErrors });
             })
             .catch(error => {
                 console.log(error);
@@ -35,7 +71,7 @@ class AdminHome extends Component {
     };
 
     render() {
-        const { scrapeComplete, reformatComplete } = this.state;
+        const { scrapeComplete, reformatComplete, reformatEntries, reformatErrors, reformatRaComplete, reformatRaEntries, reformatRaErrors, resWriting, resWritingEntries, resWritingErrors } = this.state;
         return (
             <div>
                 <div className="App">
@@ -56,7 +92,25 @@ class AdminHome extends Component {
                         </AuthBtn>
                         {reformatComplete && (
                             <div className="auth-alert">
-                                <p className="form-alert">Reformat complete</p>
+                                <p className="form-alert">Reformat complete. Entries modified: {reformatEntries.length}. Errors: {reformatErrors.length}</p>
+                            </div>
+                        )}
+                        <AuthBtn
+                            onClick={() => this.handleReformatRa()}>
+                            Reformat Resident Advisor
+                        </AuthBtn>
+                        {reformatRaComplete && (
+                            <div className="auth-alert">
+                                <p className="form-alert">Reformat complete. Entries modified: {reformatRaEntries.length}. Errors: {reformatRaErrors.length}</p>
+                            </div>
+                        )}
+                        <AuthBtn
+                            onClick={() => this.handleResWriting()}>
+                            Res Writing Test
+                        </AuthBtn>
+                        {resWriting && (
+                            <div className="auth-alert">
+                                <p className="form-alert">Res test complete. Entries modified: {resWritingEntries.length}. Errors: {resWritingErrors.length}</p>
                             </div>
                         )}
                     </header>

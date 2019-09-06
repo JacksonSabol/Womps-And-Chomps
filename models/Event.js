@@ -51,6 +51,10 @@ const EventSchema = new Schema({
     externalLink: {
         type: String
     },
+    // `reformattedDate` is of type Date for only reformatting events that don't have an image yet
+    reformattedDate: {
+        type: Date
+    },
     // `sortDate` is of type Date for sorting Events
     sortDate: {
         type: Date
