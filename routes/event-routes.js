@@ -135,11 +135,15 @@ module.exports = function (app) {
                     formattedData.title = $(row).children('td').eq(1).children("a").text();
                     formattedData.fullTitle = $(row).children('td').eq(1).text();
                     formattedData.link = $(row).children('td').eq(1).children("a").attr("href");
-                    formattedData.tags = $(row).children('td').eq(2).text();
+                    const tags = $(row).children('td').eq(2).text();
+                    formattedData.tags = tags;
+                    const tagsArray = tags.split(',').map(tag => tag.trim());
+                    formattedData.genres = tagsArray;
                     formattedData.priceAndAges = $(row).children('td').eq(3).text();
                     formattedData.organizers = $(row).children('td').eq(4).text();
                     formattedData.externalLinkTitle = $(row).children('td').eq(5).text();
                     formattedData.externalLink = $(row).children('td').eq(5).children("a").attr("href");
+                    formattedData.reformattedDate = 1;
                     formattedData.sortDate = $(row).children('td').eq(6).children("div").text();
                     return formattedData;
                 }).get();
@@ -166,7 +170,7 @@ module.exports = function (app) {
     });
     // Route to reformat existing documents in database
     app.get("/api/events/reformat", adminLoggedIn, function (req, res, next) {
-        db.Event.find({})
+        db.Event.find({ reformattedDate: 1 })
             .then(dbEvents => {
                 (async function () {
                     try {
@@ -187,18 +191,9 @@ module.exports = function (app) {
                                     const source = await getTicketmasterImage(url);
                                     event.imgSrc = source;
                                     event.reformattedDate = today.toDate();
-                                }
-                                // Disabled for now because of RA's rate limiting
-                                // else if (urlMod === "residentadvisor") {
-                                //     setTimeout(async () => {
-                                //         const tempSource = await getResAdvisorImage(url);
-                                //         const source = tempSource.error ? tempSource.error : tempSource;
-                                //         event.imgSrc = source;
-                                //     }, 4000);
-                                // } 
-                                else {
+                                } else {
                                     event.imgSrc = "N/A"
-                                    event.reformattedDate = null;
+                                    event.reformattedDate = 1;
                                 }
                                 return event;
                             } catch (e) {
@@ -232,14 +227,14 @@ module.exports = function (app) {
     });
     // Route to reformat existing documents in database for Resident Advisor
     app.get("/api/events/reformat/ra", adminLoggedIn, function (req, res, next) {
-        db.Event.find({})
+        db.Event.find({ reformattedDate: 1 })
             .then(dbEvents => {
                 (async () => {
                     try {
                         const filteredData = await dbEvents.filter(event => splitUrl(event.link) === "residentadvisor");
                         // console.log("before", filteredData);
                         let n = filteredData.length;
-                        console.log(`${n} events to be updated, taking ${n * 3} seconds to complete.`);
+                        console.log(`${n} events to be updated, taking ${n * 2} seconds to complete.`);
                         async function* linkGen() {
                             let i = 0;
                             while (i < n) {
@@ -249,7 +244,7 @@ module.exports = function (app) {
                                         const source = tempSource.error ? tempSource.error : tempSource;
                                         i++
                                         resolve(source)
-                                    }, 3000);
+                                    }, 2000);
                                 });
                             }
                         };
@@ -280,18 +275,48 @@ module.exports = function (app) {
             })
             .catch(err => res.status(422).json(err));
     });
-    // Route to test response writing
+    // Route to reformat tags into an array
+    app.get("/api/events/reformat/tags", adminLoggedIn, function (req, res, next) {
+        db.Event.find({})
+            .then(async dbEvents => {
+                const reformattedData = await dbEvents.map(event => {
+                    const tagsArray = event.tags.split(',').map(tag => tag.trim());
+                    event.genres = tagsArray;
+                    if (!event.reformattedDate) {
+                        event.reformattedDate = 1;
+                    }
+                    return event;
+                });
+                // console.log(reformattedData);
+                for await (const event of reformattedData) {
+                    db.Event.findByIdAndUpdate(event._id, { $set: { genres: event.genres, reformattedDate: event.reformattedDate } }, { new: true })
+                        .then(function (dbResponse) {
+                            res.write("a");
+                            // View the added results in the console
+                            console.log("Database Response: ", dbResponse);
+                        })
+                        .catch(function (err) {
+                            res.write("e");
+                            // If an error occurred, log it
+                            console.log("Error: ", err);
+                        });
+                }
+                setTimeout(() => {
+                    res.status(200).end();
+                }, 200);
+            });
+    });
+    // Route to test finding documents that have not been reformatted
     app.get("/api/events/test/res", adminLoggedIn, function (req, res, next) {
-        res.write("a");
-        res.write("a");
-        res.write("e");
-        res.write("a");
-        res.write("a");
-        res.write("e");
-        res.write("a");
-        res.write("e");
-        res.write("e");
-        res.status(200).end();
-        // res.end();
+
+        db.Event.find({ reformattedDate: 1 })
+            .then(dbEvents => {
+                for (const event of dbEvents) {
+                    res.write(`${event.reformattedDate}, `);
+                }
+                setTimeout(() => {
+                    res.status(200).end();
+                }, 200);
+            });
     });
 };

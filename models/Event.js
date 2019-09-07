@@ -35,6 +35,10 @@ const EventSchema = new Schema({
         type: String,
         required: true
     },
+    genres: {
+        type: Array,
+        required: true
+    },
     // `priceAndAges` is of type String for the price and ages of the Event
     priceAndAges: {
         type: String

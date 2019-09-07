@@ -21,8 +21,8 @@ function prependMobileUrl(url) {
 async function getFacebookImage(url, callback) {
     try {
         await JSDOM.fromURL(`${url}`, facebookOptions).then(dom => {
-            let source = dom.window.document.querySelector(".scaledImageFitWidth") || dom.window.document.querySelector(".scaledImageFitHeight") || "video";
-            if (source !== "video") {
+            let source = dom.window.document.querySelector(".scaledImageFitWidth") || dom.window.document.querySelector(".scaledImageFitHeight") || "N/A";
+            if (source !== "N/A") {
                 source = source.src;
             }
             callback(source);
@@ -45,7 +45,7 @@ async function getEventbriteImage(url) {
         if (e.response.req.path === "/notavailable") {
             return "Removed";
         } else {
-            return "Rate Limiter: Slow Down";
+            return "N/A";
         }
     }
 }
@@ -80,7 +80,7 @@ async function getTicketmasterImage(url) {
     try {
         const baseHtml = await request(url);
         const $ = cheerio.load(baseHtml);
-        let imgSrc = $("#artist_image").attr("src") || $('.event-header__photo').attr('src');
+        let imgSrc = $("#artist_image").attr("src") || $('.event-header__photo').attr('src') || "N/A";
         if (imgSrc.slice(0, 2) == "//") {
             const sourceSlice = imgSrc.split('').slice(26, -27).join('');
             imgSrc = 'https://www.ticketmaster.com/compressedimages/' + sourceSlice + '_RETINA_PORTRAIT_16_9.jpg?width=600&height=400&fit=crop&auto=webp';
@@ -90,7 +90,7 @@ async function getTicketmasterImage(url) {
         if (e.statusCode === 416) {
             return "unsatisfied range"
         } else {
-            console.log(e);
+            return "N/A"
         }
     }
 }

@@ -14,9 +14,11 @@ class AdminHome extends Component {
         reformatRaComplete: false,
         reformatRaEntries: [],
         reformatRaErrors: [],
+        reformatTagsComplete: false,
+        reformatTagsEntries: [],
+        reformatTagsErrors: [],
         resWriting: false,
-        resWritingEntries: [],
-        resWritingErrors: []
+        resWritingEntries: 0
     };
 
     handleScrape = () => {
@@ -56,9 +58,9 @@ class AdminHome extends Component {
                 console.log(error);
             });
     };
-    handleResWriting = () => {
+    handleReformatTags = () => {
         axios
-            .get('/api/events/test/res')
+            .get('/api/events/reformat/tags')
             .then(response => {
                 console.log(response);
                 const numEntries = response.data.split('').filter(letter => letter === "a");
@@ -69,9 +71,27 @@ class AdminHome extends Component {
                 console.log(error);
             });
     };
+    handleResWriting = () => {
+        axios
+            .get('/api/events/test/res')
+            .then(response => {
+                console.log(response);
+                const numEntries = response.data.split(',').length - 1;
+                this.setState({ resWriting: true, resWritingEntries: numEntries });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
 
     render() {
-        const { scrapeComplete, reformatComplete, reformatEntries, reformatErrors, reformatRaComplete, reformatRaEntries, reformatRaErrors, resWriting, resWritingEntries, resWritingErrors } = this.state;
+        const {
+            scrapeComplete,
+            reformatComplete, reformatEntries, reformatErrors,
+            reformatRaComplete, reformatRaEntries, reformatRaErrors,
+            reformatTagsComplete, reformatTagsEntries, reformatTagsErrors,
+            resWriting, resWritingEntries
+        } = this.state;
         return (
             <div>
                 <div className="App">
@@ -105,12 +125,21 @@ class AdminHome extends Component {
                             </div>
                         )}
                         <AuthBtn
+                            onClick={() => this.handleReformatTags()}>
+                            Reformat Tags to Genres
+                        </AuthBtn>
+                        {reformatTagsComplete && (
+                            <div className="auth-alert">
+                                <p className="form-alert">Reformat complete. Entries modified: {reformatTagsEntries.length}. Errors: {reformatTagsErrors.length}</p>
+                            </div>
+                        )}
+                        <AuthBtn
                             onClick={() => this.handleResWriting()}>
-                            Res Writing Test
+                            Retrieve # of Unformatted
                         </AuthBtn>
                         {resWriting && (
                             <div className="auth-alert">
-                                <p className="form-alert">Res test complete. Entries modified: {resWritingEntries.length}. Errors: {resWritingErrors.length}</p>
+                                <p className="form-alert">Unformatted data received. Number of Entries needing reformatting: {resWritingEntries}.</p>
                             </div>
                         )}
                     </header>
