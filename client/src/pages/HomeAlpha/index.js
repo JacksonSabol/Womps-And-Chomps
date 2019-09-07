@@ -43,7 +43,7 @@ class HomeAlpha extends Component {
                 console.log("Favorited event: ", favoritedEvent);
                 this.setState({
                     events: eventData,
-                    favorites: [favoritedEvent, ...this.state.favorites],
+                    favorites: [...this.state.favorites, ...favoritedEvent],
                     saved: [...this.state.saved, response.data]
                 });
             })
@@ -55,18 +55,25 @@ class HomeAlpha extends Component {
             .get('/api/events/all')
             .then(response => {
                 // console.log(response.data);
-                const eventData = response.data.events.map((event) => {
+                const savedIds = response.data.saved.map(event => event._id);
+                const eventData = response.data.events.map(event => {
                     if (event.imgSrc === "N/A" || event.imgSrc === "video" || event.imgSrc === "Rate Limiter: Slow Down" || !event.imgSrc) {
                         event.imgSrc = bgThr;
                     }
-                    if (response.data.saved.indexOf(event._id) > -1) {
+                    if (savedIds.indexOf(event._id) > -1) {
                         event.saved = true;
                     } else {
                         event.saved = false;
                     }
                     return event;
                 });
-                const favoriteEvents = eventData.filter(event => event.saved === true);
+                // console.log(eventData);
+                const favoriteEvents = response.data.saved.map(event =>{
+                    if (event.imgSrc === "N/A" || event.imgSrc === "video" || event.imgSrc === "Rate Limiter: Slow Down" || !event.imgSrc) {
+                        event.imgSrc = bgThr;
+                    }
+                    return event;
+                });
                 // console.log(favoriteEvents);
                 const todaysEvents = eventData.filter(event => {
                     const normDate = moment(event.sortDate);
@@ -93,7 +100,7 @@ class HomeAlpha extends Component {
                     todays: todaysEvents,
                     tomorrows: tomorrowsEvents,
                     thisWeeks: thisWeeksEvents,
-                    saved: response.data.saved
+                    saved: savedIds
                 });
             })
             .catch(error => {
@@ -123,7 +130,7 @@ class HomeAlpha extends Component {
                         <div className="home-alpha-section">
                             <h1>Home (Alpha):</h1>
                             <Slider
-                                events={favorites}
+                                events={[...favorites].reverse()}
                                 sliderTitle={"Favorites: "}
                                 keySuffix={"fav"}
                             />
@@ -142,9 +149,9 @@ class HomeAlpha extends Component {
                                 sliderTitle={"This Week's Events: "}
                                 keySuffix={"wee"}
                             />
+                            <div className="events-block-title">Browse All Upcoming Events:</div>
                             {events.length ? (
                                 <section className="home-alpha-area">
-                                    <h5>Browse All Upcoming Events:</h5>
                                     {events.map(event => (
                                         <EventCard key={event._id}
                                             eventId={event._id}

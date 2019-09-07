@@ -52,6 +52,7 @@ module.exports = function (app) {
             .sort('field sortDate')
             .then(dbEvents => {
                 db.User.findOne({ _id: req.user.id })
+                    .populate("events")
                     .then(dbUserEvents => {
                         const data = {
                             events: dbEvents,

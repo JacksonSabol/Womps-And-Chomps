@@ -15,7 +15,20 @@
     margin-top: 0;
     margin-bottom: 0;
 }
+.events-block-title {
+    width: 97%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.2rem;
+    color: #fff;
+    font-weight: 700;
+}
 .home-alpha-area {
+    width: 97%;
+    margin-left: auto;
+    margin-right: auto;
     position: relative;
     display: block;
     max-height: 500px;
