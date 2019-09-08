@@ -76,7 +76,7 @@ class AdminHome extends Component {
             .get('/api/events/test/res')
             .then(response => {
                 console.log(response);
-                const numEntries = response.data.split(',').length - 1;
+                const numEntries = response.data.split(',').length;
                 this.setState({ resWriting: true, resWritingEntries: numEntries });
             })
             .catch(error => {
@@ -139,7 +139,7 @@ class AdminHome extends Component {
                         </AuthBtn>
                         {resWriting && (
                             <div className="auth-alert">
-                                <p className="form-alert">Unformatted data received. Number of Entries needing reformatting: {resWritingEntries}.</p>
+                                <p className="form-alert">Unformatted data received. Number of Entries needing reformatting: {resWritingEntries - 1}.</p>
                             </div>
                         )}
                     </header>
