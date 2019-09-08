@@ -24,7 +24,7 @@ const Navbar = (props) => {
         <NavbarItem
           onClick={() => props.handlePageChange("Home")}
         >
-          Home
+          Home* (Alpha)
           </NavbarItem>
         <NavbarItem
           onClick={() => props.handlePageChange("Events")}
@@ -37,9 +37,9 @@ const Navbar = (props) => {
           Favorites
           </NavbarItem>
         <NavbarItem
-          onClick={() => props.handlePageChange("HomeAlpha")}
+          onClick={() => props.handlePageChange("About")}
         >
-          Home* (Alpha)
+          About
           </NavbarItem>
         <NavbarItem
           onClick={() => props.handleLogout()}

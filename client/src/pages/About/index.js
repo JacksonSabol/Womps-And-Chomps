@@ -5,7 +5,7 @@ import '../../App.css';
 import './index.css';
 import { List, ListItem } from '../../Components/List';
 
-class UserHome extends Component {
+class About extends Component {
     // Set the initial state values
     state = {
         username: this.props.username,
@@ -69,4 +69,4 @@ class UserHome extends Component {
     }
 }
 
-export default UserHome;
+export default About;

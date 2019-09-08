@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Instructotron } from '../../Components/Instructotron';
 import Navbar from '../../Components/Navbar';
-import UserHome from '../UserHome';
+import About from '../About';
 import Events from '../Events';
 import Favorites from '../Favorites';
 import HomeAlpha from '../HomeAlpha';
@@ -46,7 +46,7 @@ class Main extends Component {
 
   renderPage = () => {
     switch (this.state.currentPage) {
-      case "Home": return <UserHome
+      case "Home": return <HomeAlpha
         username={this.state.username}
       />;
       case "Events": return <Events
@@ -55,10 +55,10 @@ class Main extends Component {
       case "Favorites": return <Favorites
         username={this.state.username}
       />;
-      case "HomeAlpha": return <HomeAlpha
+      case "About": return <About
         username={this.state.username}
       />;
-      default: return <UserHome
+      default: return <HomeAlpha
         username={this.state.username}
       />;
     }
