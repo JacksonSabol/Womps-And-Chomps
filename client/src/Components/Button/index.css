@@ -43,6 +43,9 @@
     margin: 1.5em 0px;
     cursor: pointer;
 }
+.navbar-nav-item-btn.active {
+    font-weight: bold;
+}
 @media screen and (max-width: 768px) {
     .navbar-nav-item-btn {
         padding: 1.6em 0.5em;

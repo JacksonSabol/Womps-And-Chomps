@@ -36,7 +36,7 @@ export function HomeBtn(props) {
 // This Navbar Item Button component allows us to use a styled NavbarItem button with less syntax
 export function NavbarItem(props) {
     return (
-        <button className="navbar-nav-item-btn" {...props}>
+        <button className={`navbar-nav-item-btn${props.active}`} onClick={props.onClick}>
             {props.children}
         </button>
     );

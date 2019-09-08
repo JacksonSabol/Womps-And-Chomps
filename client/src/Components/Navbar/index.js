@@ -23,26 +23,31 @@ const Navbar = (props) => {
         <a href="/" className="home-logo">{`W&C`}</a>
         <NavbarItem
           onClick={() => props.handlePageChange("Home")}
+          active={props.currentPage === "Home" ? " active" : ""}
         >
           Home* (Alpha)
           </NavbarItem>
         <NavbarItem
           onClick={() => props.handlePageChange("Events")}
+          active={props.currentPage === "Events" ? " active" : ""}
         >
           Events
           </NavbarItem>
         <NavbarItem
           onClick={() => props.handlePageChange("Favorites")}
+          active={props.currentPage === "Favorites" ? " active" : ""}
         >
           Favorites
           </NavbarItem>
         <NavbarItem
+          active={props.currentPage === "About" ? " active" : ""}
           onClick={() => props.handlePageChange("About")}
         >
           About
           </NavbarItem>
         <NavbarItem
           onClick={() => props.handleLogout()}
+          active={""}
         >
           Logout
           </NavbarItem>

@@ -21,6 +21,10 @@ class HomeAlpha extends Component {
         todays: [],
         tomorrows: [],
         thisWeeks: [],
+        houseEvents: [],
+        technoEvents: [],
+        dubstepEvents: [],
+        tranceEvents: [],
         saved: [],
         loading: true,
         loginError: false
@@ -108,6 +112,14 @@ class HomeAlpha extends Component {
                     return diff > 0;
                 });
                 // console.log(thisWeeksEvents);
+                const houseEvents = eventData.filter(event => event.genres.indexOf("house") > -1);
+                // console.log(houseEvents);
+                const technoEvents = eventData.filter(event => event.genres.indexOf("techno") > -1);
+                // console.log(technoEvents);
+                const dubstepEvents = eventData.filter(event => event.genres.indexOf("dubstep") > -1);
+                // console.log(dubstepEvents);
+                const tranceEvents = eventData.filter(event => event.genres.indexOf("trance") > -1);
+                // console.log(tranceEvents);
                 this.setState({
                     loading: false,
                     username: this.props.username,
@@ -116,6 +128,10 @@ class HomeAlpha extends Component {
                     todays: todaysEvents,
                     tomorrows: tomorrowsEvents,
                     thisWeeks: thisWeeksEvents,
+                    houseEvents: houseEvents,
+                    technoEvents: technoEvents,
+                    dubstepEvents: dubstepEvents,
+                    tranceEvents: tranceEvents,
                     saved: savedIds
                 });
             })
@@ -129,7 +145,7 @@ class HomeAlpha extends Component {
     }
 
     render() {
-        const { events, favorites, todays, tomorrows, thisWeeks, loading, loginError } = this.state;
+        const { events, favorites, todays, tomorrows, thisWeeks, houseEvents, technoEvents, dubstepEvents, tranceEvents, loading, loginError } = this.state;
         if (loading) {
             return (
                 <Instructotron>
@@ -169,7 +185,31 @@ class HomeAlpha extends Component {
                                 keySuffix={"wee"}
                                 handlePageScroll={this.handlePageScroll}
                             />
-                            <div className="events-block-title">Browse All Upcoming Events:</div>
+                            <Slider
+                                events={houseEvents}
+                                sliderTitle={"House: "}
+                                keySuffix={"hou"}
+                                handlePageScroll={this.handlePageScroll}
+                            />
+                            <Slider
+                                events={technoEvents}
+                                sliderTitle={"Techno: "}
+                                keySuffix={"tno"}
+                                handlePageScroll={this.handlePageScroll}
+                            />
+                            <Slider
+                                events={dubstepEvents}
+                                sliderTitle={"Dubstep: "}
+                                keySuffix={"dst"}
+                                handlePageScroll={this.handlePageScroll}
+                            />
+                            <Slider
+                                events={tranceEvents}
+                                sliderTitle={"Trance: "}
+                                keySuffix={"tra"}
+                                handlePageScroll={this.handlePageScroll}
+                            />
+                            {/* <div className="events-block-title">Browse All Upcoming Events:</div>
                             {events.length ? (
                                 <section className="home-alpha-area">
                                     {events.map(event => (
@@ -191,7 +231,7 @@ class HomeAlpha extends Component {
                                 </section>
                             ) : (
                                     <h3>No Results to Display. Click on the Scrape Button to Populate the Database.</h3>
-                                )}
+                                )} */}
                         </div>
                     </div>
                 </div>

@@ -20,7 +20,7 @@ const Slider = (props) => {
   } = useSliding(containerWidth, props.events.length);
 
   const handleSelect = (event, slider) => {
-    props.handlePageScroll(slider);
+    setTimeout(() => props.handlePageScroll(slider), 500);
     setCurrentSlide(event);
     setTimeout(() => {
       setContentStyle(" animate");
