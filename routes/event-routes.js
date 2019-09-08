@@ -177,6 +177,8 @@ module.exports = function (app) {
             .then(dbEvents => {
                 (async function () {
                     try {
+                        const time = dbEvents.length * 100;
+                        console.log(time);
                         const eventData = await Promise.all(dbEvents.map(async (event) => {
                             try {
                                 const url = event.link ? event.link : "https://www.N/A.com";
@@ -229,7 +231,7 @@ module.exports = function (app) {
                         setTimeout(() => {
                             res.status(200);
                             res.end();
-                        }, 300);
+                        }, time);
                     } catch (e) {
                         console.log(e.message);
                     }
