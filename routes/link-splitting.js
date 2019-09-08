@@ -17,7 +17,6 @@ function splitUrl(url) {
 function checkUrl(url) {
     const pre = url.split('/');
     const post = pre[2].split('.');
-    console.log(post);
     if (post[0] === "www" || post[0] === "wl" || post[0] === "concerts") { return true }
     else { return false }
 };
@@ -28,9 +27,7 @@ function prependUrl(url) {
     const periods = slashes[2].split('.');
     periods.unshift("www");
     const pre = periods.join('.');
-    console.log(pre);
     const output = [https, space, pre, ...rest];
-    console.log(output.join('/'));
     return output.join('/');
 };
 
