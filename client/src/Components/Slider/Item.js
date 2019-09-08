@@ -7,6 +7,7 @@ const Item = (props) => {
 
   return (
     <div className={`item${isActive}`}>
+      <div className="venue-span">{props.event.venue}</div>
       <img src={props.event.imgSrc} alt="" />
       <div className="title-container">
         <p>{props.event.title}</p>

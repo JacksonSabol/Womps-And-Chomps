@@ -16,7 +16,7 @@ const Content = ({ event, onClose, animate }) => (
         <div className="content__title">{event.title}</div>
         <div className="content__description">
           <p>When: {event.dateAndTime}</p>
-          <p>Where:{event.fullTitle.split('@')[1]}</p>
+          <p>Where: {event.venue}</p>
           <p>Price | Ages: {event.priceAndAges}</p>
           <p>Organizers: {event.organizers || "N/A"}</p>
           <p>Link: <a href={`${event.link}`} rel="noopener noreferrer" target="_blank">{event.link}</a></p>

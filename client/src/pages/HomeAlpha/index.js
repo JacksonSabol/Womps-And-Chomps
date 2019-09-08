@@ -4,7 +4,7 @@ import moment from 'moment';
 import './index.css';
 import { Instructotron } from '../../Components/Instructotron';
 import Slider from '../../Components/Slider';
-import { EventCard } from '../../Components/EventCard';
+// import { EventCard } from '../../Components/EventCard';
 import bgThr from '../../media/slider/3.jpg';
 
 const today = moment().endOf('day');
@@ -85,6 +85,7 @@ class HomeAlpha extends Component {
                     } else {
                         event.saved = false;
                     }
+                    event.venue = event.fullTitle.split('@')[1].trim();
                     return event;
                 });
                 // console.log(eventData);
@@ -92,6 +93,7 @@ class HomeAlpha extends Component {
                     if (event.imgSrc === "N/A" || event.imgSrc === "video" || event.imgSrc === "Rate Limiter: Slow Down" || !event.imgSrc) {
                         event.imgSrc = bgThr;
                     }
+                    event.venue = event.fullTitle.split('@')[1].trim();
                     return event;
                 });
                 // console.log(favoriteEvents);
