@@ -315,7 +315,7 @@ module.exports = function (app) {
                 }
                 setTimeout(() => {
                     res.status(200).end();
-                }, 200);
+                }, 5000);
             });
     });
     // Route to test finding documents that have not been reformatted
