@@ -8,14 +8,30 @@ const facebookOptions = {
     // resources: "usable"
 };
 
-function splitUrl(url) { return url.split('.')[1] };
+function splitUrl(url) { 
+    const check = checkUrl(url);
+    if (check) { return url.split('.')[1]}
+    else { const newUrl =  prependUrl(url); return splitUrl(newUrl) };
+};
 
-function prependMobileUrl(url) {
-    const periods = url.split('.');
-    const pre = periods[0].split('/');
-    pre[2] = "mobile";
-    periods[0] = pre.join('/');
-    return periods.join('.');
+function checkUrl(url) {
+    const pre = url.split('/');
+    const post = pre[2].split('.');
+    console.log(post);
+    if (post[0] === "www" || post[0] === "wl" || post[0] === "concerts") { return true }
+    else { return false }
+};
+
+function prependUrl(url) {
+    const slashes = url.split('/');
+    const [https, space, dotcom, ...rest] = slashes;
+    const periods = slashes[2].split('.');
+    periods.unshift("www");
+    const pre = periods.join('.');
+    console.log(pre);
+    const output = [https, space, pre, ...rest];
+    console.log(output.join('/'));
+    return output.join('/');
 };
 
 async function getFacebookImage(url, callback) {
@@ -95,11 +111,54 @@ async function getTicketmasterImage(url) {
     }
 }
 
+async function getDnaLoungeImage(url, callback) {
+    try {
+        await JSDOM.fromURL(`${url}`, facebookOptions).then(dom => {
+            let source = dom.window.document.querySelector(".fthumb") || "N/A";
+            if (source !== "N/A") {
+                source = source.src;
+            }
+            callback(source);
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getBigNeonImage(url, callback) {
+    try {
+        await JSDOM.fromURL(`${url}`, facebookOptions).then(dom => {
+            // ^='background-image: url'
+            const source = dom.window.document.querySelector("div[style]");
+            console.log(source);
+            const sourceUrl = source.style.backgroundImage;
+            callback(sourceUrl);
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getTicketWebImage(url) {
+    try {
+        const baseHtml = await request(url);
+        const $ = cheerio.load(baseHtml);
+        let imgSrc = $(".event-image").attr("data-ng-src");
+        return imgSrc;
+    } catch (e) {
+        console.log(e);
+        // return "Error"
+    }
+}
+
 module.exports = {
     splitUrl,
-    prependMobileUrl,
+    prependUrl,
     getFacebookImage,
     getEventbriteImage,
     getResAdvisorImage,
-    getTicketmasterImage
+    getTicketmasterImage,
+    getDnaLoungeImage,
+    getBigNeonImage,
+    getTicketWebImage
 };

@@ -6,9 +6,11 @@ const axios = require("axios");
 const request = require("request-promise");
 // Import helper functions for link splitting and retrieving images
 const getFacebookImage = require("./link-splitting").getFacebookImage;
+const getDnaLoungeImage = require("./link-splitting").getDnaLoungeImage;
 const getEventbriteImage = require("./link-splitting").getEventbriteImage;
 const getTicketmasterImage = require("./link-splitting").getTicketmasterImage;
 const getResAdvisorImage = require("./link-splitting").getResAdvisorImage;
+const getTicketWebImage = require("./link-splitting").getTicketWebImage;
 const splitUrl = require("./link-splitting").splitUrl;
 // Require all models
 const db = require("../models");
@@ -177,10 +179,15 @@ module.exports = function (app) {
                     try {
                         const eventData = await Promise.all(dbEvents.map(async (event) => {
                             try {
-                                const url = event.link ? event.link : "w.N/A.w";
+                                const url = event.link ? event.link : "https://www.N/A.com";
                                 const urlMod = await splitUrl(url);
                                 if (urlMod === "facebook") {
                                     await getFacebookImage(url, function (source) {
+                                        event.imgSrc = source;
+                                        event.reformattedDate = today.toDate();
+                                    });
+                                } else if (urlMod === "dnalounge") {
+                                    await getDnaLoungeImage(url, function (source) {
                                         event.imgSrc = source;
                                         event.reformattedDate = today.toDate();
                                     });
@@ -190,6 +197,10 @@ module.exports = function (app) {
                                     event.reformattedDate = today.toDate();
                                 } else if (urlMod === "ticketmaster") {
                                     const source = await getTicketmasterImage(url);
+                                    event.imgSrc = source;
+                                    event.reformattedDate = today.toDate();
+                                } else if (urlMod === "ticketweb") {
+                                    const source = await getTicketWebImage(url);
                                     event.imgSrc = source;
                                     event.reformattedDate = today.toDate();
                                 } else {
@@ -312,6 +323,7 @@ module.exports = function (app) {
 
         db.Event.find({ reformattedDate: 1 })
             .then(dbEvents => {
+                console.log(dbEvents);
                 for (const event of dbEvents) {
                     res.write(`${event.reformattedDate}, `);
                 }
