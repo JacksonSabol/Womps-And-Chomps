@@ -173,7 +173,7 @@ module.exports = function (app) {
     });
     // Route to reformat existing documents in database
     app.get("/api/events/reformat", adminLoggedIn, function (req, res, next) {
-        db.Event.find({}) // reformattedDate: 1 
+        db.Event.find({ reformattedDate: 1 })
             .then(dbEvents => {
                 (async function () {
                     try {
@@ -239,7 +239,7 @@ module.exports = function (app) {
     });
     // Route to reformat existing documents in database for Resident Advisor
     app.get("/api/events/reformat/ra", adminLoggedIn, function (req, res, next) {
-        db.Event.find({}) //  reformattedDate: 1 
+        db.Event.find({ reformattedDate: 1 })
             .then(dbEvents => {
                 (async () => {
                     try {
