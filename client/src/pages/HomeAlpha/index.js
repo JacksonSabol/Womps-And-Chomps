@@ -26,6 +26,22 @@ class HomeAlpha extends Component {
         loginError: false
     };
 
+    offset = (elm) => {
+        const rect = elm.getBoundingClientRect(),
+            currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        return rect.top + currentScrollTop;
+    };
+
+    handlePageScroll = (hash) => {
+        let element = document.getElementById(hash);
+        let target = this.offset(element);
+        window.scroll({
+            top: target - 70,
+            left: 0,
+            behavior: 'smooth'
+        });
+    };
+
     handleSaveEvent = eventId => {
         axios
             .put(`/api/events/save/${eventId}`)
@@ -133,21 +149,25 @@ class HomeAlpha extends Component {
                                 events={[...favorites].reverse()}
                                 sliderTitle={"Favorites: "}
                                 keySuffix={"fav"}
+                                handlePageScroll={this.handlePageScroll}
                             />
                             <Slider
                                 events={todays}
                                 sliderTitle={"Today's Events: "}
                                 keySuffix={"tod"}
+                                handlePageScroll={this.handlePageScroll}
                             />
                             <Slider
                                 events={tomorrows}
                                 sliderTitle={"Tomorrow's Events: "}
                                 keySuffix={"tom"}
+                                handlePageScroll={this.handlePageScroll}
                             />
                             <Slider
                                 events={thisWeeks}
                                 sliderTitle={"This Week's Events: "}
                                 keySuffix={"wee"}
+                                handlePageScroll={this.handlePageScroll}
                             />
                             <div className="events-block-title">Browse All Upcoming Events:</div>
                             {events.length ? (

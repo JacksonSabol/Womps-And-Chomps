@@ -19,7 +19,8 @@ const Slider = (props) => {
     hasPrev
   } = useSliding(containerWidth, props.events.length);
 
-  const handleSelect = event => {
+  const handleSelect = (event, slider) => {
+    props.handlePageScroll(slider);
     setCurrentSlide(event);
     setTimeout(() => {
       setContentStyle(" animate");
@@ -32,10 +33,11 @@ const Slider = (props) => {
   };
 
   const isOpen = currentSlide !== null ? " slider--open" : "";
+  const sliderId = `${props.keySuffix}-slider`;
 
   return (
     <div>
-      <SliderWrapper width={containerWidth} title={props.sliderTitle}>
+      <SliderWrapper width={containerWidth} title={props.sliderTitle} sliderId={sliderId}>
         <div
           className={`slider${isOpen}`}
         >
@@ -44,6 +46,7 @@ const Slider = (props) => {
               <Item
                 event={event}
                 key={event._id + props.keySuffix}
+                sliderId={sliderId}
                 handleSelect={handleSelect}
                 currentSlide={currentSlide}
               />

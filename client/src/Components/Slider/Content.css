@@ -13,7 +13,7 @@
 .content.animate {
     visibility: visible;
     width: 97%;
-    height: 37vw;
+    height: 63vmin;
 }
 .content__background,
 .content__background__shadow,
@@ -66,13 +66,13 @@
 }
   
 .content__title {
-    font-size: 45px;
+    font-size: 2.81vmax;
     color: #fff;
     font-weight: 700;
 }
   
 .content__description {
-    font-size: 18px;
+    font-size: 1.125vmax;
     color: #999;
     margin-top: 20px;
     max-width: 500px;

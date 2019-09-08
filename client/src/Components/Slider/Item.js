@@ -11,7 +11,7 @@ const Item = (props) => {
       <div className="title-container">
         <p>{props.event.title}</p>
       </div>
-      <ShowDetailsButton onClick={() => props.handleSelect(props.event)} />
+      <ShowDetailsButton onClick={() => props.handleSelect(props.event, props.sliderId)} />
     </div>
   );
 };
