@@ -18,13 +18,6 @@ class HomeAlpha extends Component {
         events: [],
         favorites: [],
         featured: [],
-        todays: [],
-        tomorrows: [],
-        thisWeeks: [],
-        houseEvents: [],
-        technoEvents: [],
-        dubstepEvents: [],
-        tranceEvents: [],
         saved: [],
         loading: true,
         loginError: false
@@ -59,8 +52,8 @@ class HomeAlpha extends Component {
                     return event;
                 });
                 const favoritedEvent = this.state.events.filter(event => event._id === response.data);
-                console.log("Event Data: ", eventData);
-                console.log("Favorited event: ", favoritedEvent);
+                // console.log("Event Data: ", eventData);
+                // console.log("Favorited event: ", favoritedEvent);
                 this.setState({
                     events: eventData,
                     favorites: [...this.state.favorites, ...favoritedEvent],
@@ -93,47 +86,16 @@ class HomeAlpha extends Component {
                     if (event.imgSrc === "N/A" || event.imgSrc === "video" || event.imgSrc === "Rate Limiter: Slow Down" || !event.imgSrc) {
                         event.imgSrc = bgThr;
                     }
+                    event.saved = true;
                     event.venue = event.fullTitle.split('@')[1].trim();
                     return event;
                 });
                 // console.log(favoriteEvents);
-                const todaysEvents = eventData.filter(event => {
-                    const normDate = moment(event.sortDate);
-                    return today.diff(normDate, 'minutes') > 0;
-                });
-                // console.log(todaysEvents);
-                const tomorrowsEvents = eventData.filter(event => {
-                    const normDate = moment(event.sortDate);
-                    const diff = tomorrow.diff(normDate, 'minutes'); 
-                    return diff > 0 && diff < 1440;
-                });
-                // console.log(tomorrowsEvents);
-                const thisWeeksEvents = eventData.filter(event => {
-                    const normDate = moment(event.sortDate);
-                    const diff = week.diff(normDate, 'minutes'); 
-                    return diff > 0;
-                });
-                // console.log(thisWeeksEvents);
-                const houseEvents = eventData.filter(event => event.genres.indexOf("house") > -1);
-                // console.log(houseEvents);
-                const technoEvents = eventData.filter(event => event.genres.indexOf("techno") > -1);
-                // console.log(technoEvents);
-                const dubstepEvents = eventData.filter(event => event.genres.indexOf("dubstep") > -1);
-                // console.log(dubstepEvents);
-                const tranceEvents = eventData.filter(event => event.genres.indexOf("trance") > -1);
-                // console.log(tranceEvents);
                 this.setState({
                     loading: false,
                     username: this.props.username,
                     events: eventData,
                     favorites: favoriteEvents,
-                    todays: todaysEvents,
-                    tomorrows: tomorrowsEvents,
-                    thisWeeks: thisWeeksEvents,
-                    houseEvents: houseEvents,
-                    technoEvents: technoEvents,
-                    dubstepEvents: dubstepEvents,
-                    tranceEvents: tranceEvents,
                     saved: savedIds
                 });
             })
@@ -147,7 +109,25 @@ class HomeAlpha extends Component {
     }
 
     render() {
-        const { events, favorites, todays, tomorrows, thisWeeks, houseEvents, technoEvents, dubstepEvents, tranceEvents, loading, loginError } = this.state;
+        const { events, favorites, loading, loginError } = this.state;
+        const todays = events.filter(event => {
+            const normDate = moment(event.sortDate);
+            return today.diff(normDate, 'minutes') > 0;
+        });
+        const tomorrows = events.filter(event => {
+            const normDate = moment(event.sortDate);
+            const diff = tomorrow.diff(normDate, 'minutes'); 
+            return diff > 0 && diff < 1440;
+        });
+        const thisWeeks = events.filter(event => {
+            const normDate = moment(event.sortDate);
+            const diff = week.diff(normDate, 'minutes'); 
+            return diff > 0;
+        });
+        const houseEvents = events.filter(event => event.genres.indexOf("house") > -1);
+        const technoEvents = events.filter(event => event.genres.indexOf("techno") > -1);
+        const dubstepEvents = events.filter(event => event.genres.indexOf("dubstep") > -1);
+        const tranceEvents = events.filter(event => event.genres.indexOf("trance") > -1);
         if (loading) {
             return (
                 <Instructotron>
@@ -167,73 +147,58 @@ class HomeAlpha extends Component {
                                 events={[...favorites].reverse()}
                                 sliderTitle={"Favorites: "}
                                 keySuffix={"fav"}
+                                handleSaveEvent={this.handleSaveEvent}
                                 handlePageScroll={this.handlePageScroll}
                             />
                             <Slider
                                 events={todays}
                                 sliderTitle={"Today's Events: "}
                                 keySuffix={"tod"}
+                                handleSaveEvent={this.handleSaveEvent}
                                 handlePageScroll={this.handlePageScroll}
                             />
                             <Slider
                                 events={tomorrows}
                                 sliderTitle={"Tomorrow's Events: "}
                                 keySuffix={"tom"}
+                                handleSaveEvent={this.handleSaveEvent}
                                 handlePageScroll={this.handlePageScroll}
                             />
                             <Slider
                                 events={thisWeeks}
                                 sliderTitle={"This Week's Events: "}
                                 keySuffix={"wee"}
+                                handleSaveEvent={this.handleSaveEvent}
                                 handlePageScroll={this.handlePageScroll}
                             />
                             <Slider
                                 events={houseEvents}
                                 sliderTitle={"House: "}
                                 keySuffix={"hou"}
+                                handleSaveEvent={this.handleSaveEvent}
                                 handlePageScroll={this.handlePageScroll}
                             />
                             <Slider
                                 events={technoEvents}
                                 sliderTitle={"Techno: "}
                                 keySuffix={"tno"}
+                                handleSaveEvent={this.handleSaveEvent}
                                 handlePageScroll={this.handlePageScroll}
                             />
                             <Slider
                                 events={dubstepEvents}
                                 sliderTitle={"Dubstep: "}
                                 keySuffix={"dst"}
+                                handleSaveEvent={this.handleSaveEvent}
                                 handlePageScroll={this.handlePageScroll}
                             />
                             <Slider
                                 events={tranceEvents}
                                 sliderTitle={"Trance: "}
                                 keySuffix={"tra"}
+                                handleSaveEvent={this.handleSaveEvent}
                                 handlePageScroll={this.handlePageScroll}
                             />
-                            {/* <div className="events-block-title">Browse All Upcoming Events:</div>
-                            {events.length ? (
-                                <section className="home-alpha-area">
-                                    {events.map(event => (
-                                        <EventCard key={event._id}
-                                            eventId={event._id}
-                                            link={event.link}
-                                            title={event.title}
-                                            dateAndTime={event.dateAndTime}
-                                            priceAndAges={event.priceAndAges}
-                                            fullTitle={event.fullTitle}
-                                            organizers={event.organizers}
-                                            bgImg={event.imgSrc}
-                                            favorite={false}
-                                            saved={event.saved ? " saved" : ""}
-                                            alt={`No Image Available`}
-                                            handleSaveEvent={this.handleSaveEvent}
-                                        />
-                                    ))}
-                                </section>
-                            ) : (
-                                    <h3>No Results to Display. Click on the Scrape Button to Populate the Database.</h3>
-                                )} */}
                         </div>
                     </div>
                 </div>

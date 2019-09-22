@@ -58,7 +58,7 @@ const Slider = (props) => {
         {isOpen && hasPrev && <SlideButton onClick={handlePrev} type="prev-open" />}
         {isOpen && hasNext && <SlideButton onClick={handleNext} type="next-open" />}
       </SliderWrapper>
-      {currentSlide && <Content event={currentSlide} onClose={handleClose} animate={contentStyle} />}
+      {currentSlide && <Content event={currentSlide} onClose={handleClose} handleSaveEvent={props.handleSaveEvent} animate={contentStyle} />}
     </div>
   );
 };
