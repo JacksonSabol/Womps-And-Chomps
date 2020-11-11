@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Instructotron } from '../../Components/Instructotron';
 import Navbar from '../../Components/Navbar';
+// import Navbar from '../../Components/NavbarTailMe';
 import About from '../About';
 import Events from '../Events';
 import Favorites from '../Favorites';
