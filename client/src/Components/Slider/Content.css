@@ -3,7 +3,7 @@
     visibility: hidden;
     width: 0;
     height: 0;
-    overflow: hidden;
+    /* overflow: hidden; */
     margin-left: auto;
     margin-right: auto;
     margin-top: -40px;
@@ -13,7 +13,9 @@
 .content.animate {
     visibility: visible;
     width: 97%;
-    height: 63vmin;
+    height: auto;
+    /* Check min height for long titles pushing content down */
+    min-height: 63vmin;
 }
 .content__background,
 .content__background__shadow,
